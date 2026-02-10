@@ -1,19 +1,23 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
 class Ciclista extends Model
 {
-    protected $table = 'ciclistas';
-    protected $fillable = ['nombre', 'apellido', 'email', 'telefono', 'direccion', 'ciudad', 'provincia'];
-    protected $hidden = ['password'];
+    protected $table = 'ciclista';
+    protected $fillable = ['nombre', 'apellidos','email', 'password', 'fecha_nacimiento', 'peso', 'altura'];
+    protected $hidden = ['password', 'remember_token'];
     public $timestamps = false;
 
     public function planes()
     {
-        return $this->hasMany(Articulo::class);
+        // Asegúrate de crear el modelo PlanEntrenamiento después
+        return $this->hasMany(PlanEntrenamiento::class, 'id_ciclista');
     }
     
 }
