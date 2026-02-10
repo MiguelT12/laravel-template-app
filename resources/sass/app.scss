@@ -6,3 +6,29 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+// ===== LOGIN =====
+.login-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container .card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.login-container .card-header {
+    background-color: #0d6efd;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+.login-container button {
+    width: 100%;
+}

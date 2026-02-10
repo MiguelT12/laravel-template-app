@@ -1,0 +1,92 @@
+/* ===== FONDO GENERAL ===== */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #e8f0fe; /* azul claro */
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.container {
+    min-height: calc(100vh - 64px); /* altura de la pantalla menos navbar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* ===== RESETEO DE BOOTSTRAP ===== */
+.row {
+    margin: 0;
+}
+
+.card {
+    margin: 0;
+}
+
+/* ===== TARJETA ===== */
+.card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 8px;
+    border: 1px solid #90caf9;
+}
+
+/* ===== CABECERA ===== */
+.card-header {
+    background-color: #2563eb;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* ===== CUERPO ===== */
+.card-body {
+    padding: 25px;
+}
+
+/* ===== LABELS ===== */
+label {
+    color: #1e3a8a;
+    font-weight: bold;
+}
+
+/* ===== INPUTS ===== */
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #90caf9;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* ===== BOTÓN ===== */
+.btn-primary {
+    width: 100%;
+    background-color: #2563eb;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+/* ===== LINKS ===== */
+.btn-link,
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.btn-link:hover,
+a:hover {
+    text-decoration: underline;
+}
+
+/* ===== CHECKBOX ===== */
+.form-check-label {
+    color: #1e3a8a;
+}
