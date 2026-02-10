@@ -7,8 +7,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
-class Ciclista extends Model
+class Ciclista extends Authenticatable
 {
+    use HasApiTokens, Notifiable; 
+
     protected $table = 'ciclista';
     protected $fillable = ['nombre', 'apellidos','email', 'password', 'fecha_nacimiento', 'peso', 'altura'];
     protected $hidden = ['password', 'remember_token'];
