@@ -14,24 +14,20 @@ services:
       - ./:/var/www
     networks:
       - dawapp
-  
+
   db:
     image: mysql:5.7
     platform: linux/amd64
     container_name: dawapp-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    volumes:
-      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+      MYSQL_DATABASE: entrenamientos
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: entrenamientos_user
+      MYSQL_PASSWORD: daw2025
     networks:
       - dawapp
-  
+
   nginx:
     image: nginx:1.17-alpine
     platform: linux/amd64

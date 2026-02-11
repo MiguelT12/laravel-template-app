@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    renderMenu();
 });
 
 async function renderMenu() {
@@ -43,9 +44,13 @@ async function renderMenu() {
     const data = await res.json();
     const container = document.getElementById('dynamic-menu-container');
     
+    if (!container) return;
+
     container.innerHTML = data.opciones.map(op => `
         <li class="nav-item">
-            <a class="nav-link" href="#" onclick="loadView('${op.endpoint}')">${op.nombre}</a>
+            <a class="nav-link" href="${op.endpoint}">
+                ${op.nombre}
+            </a>
         </li>
     `).join('');
 }
