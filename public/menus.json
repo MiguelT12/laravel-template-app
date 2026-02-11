@@ -1,0 +1,16 @@
+{
+  "opciones": [
+    {
+      "nombre": "Inicio",
+      "endpoint": "/home"
+    },
+    {
+      "nombre": "Perfil",
+      "endpoint": "/profile"
+    },
+    {
+      "nombre": "Entrenamientos",
+      "endpoint": "/entrenamientos"
+    }
+  ]
+}
