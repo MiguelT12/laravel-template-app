@@ -3,32 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\SesionEntrenamiento;
+use Illuminate\Support\Facades\Auth;
 
 class SesionController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // 1. Obtener el usuario autenticado (gracias al token)
-        $ciclista = $request->user();
+        // 1. Aquí más adelante haremos la consulta a la base de datos real.
+        // $sesiones = Sesion::where('ciclista_id', Auth::id())->get();
 
-        // 2. Leer parámetros para el scroll infinito
-        // Si no se envían, por defecto offset es 0 y limit es 10
-        $offset = $request->input('offset', 0);
-        $limit = $request->input('limit', 10);
-
-        // 3. Buscar las sesiones DE ESTE CICLISTA
-        // La relación es: Sesion -> Plan -> Ciclista
-        $sesiones = SesionEntrenamiento::whereHas('plan', function($query) use ($ciclista) {
-            $query->where('id_ciclista', $ciclista->id);
-        })
-        ->with('bloques') // Cargar también los bloques de la sesión
-        ->orderBy('fecha', 'asc') // Ordenar por fecha
-        ->skip($offset)
-        ->take($limit)
-        ->get();
-
-        // 4. Devolver respuesta JSON
-        return response()->json($sesiones);
+        // 2. POR AHORA: Devolvemos datos falsos para que veas que funciona el menú
+        return response()->json([
+            [
+                'id' => 1,
+                'nombre' => 'Entrenamiento de Montaña',
+                'fecha' => '2023-10-25',
+                'kilometros' => 45.5,
+                'recorrido' => 'Cercedilla - Navacerrada'
+            ],
+            [
+                'id' => 2,
+                'nombre' => 'Serie de Velocidad',
+                'fecha' => '2023-10-28',
+                'kilometros' => 20.0,
+                'recorrido' => 'Velódromo'
+            ]
+        ]);
     }
 }

@@ -1,38 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Referencias a los elementos del DOM ---
+    // --- REFERENCIAS DOM ---
     const vistaLogin = document.getElementById('vista-login');
     const vistaDashboard = document.getElementById('vista-dashboard');
-    const formLogin = document.getElementById('form-login');
-    const btnLogout = document.getElementById('btn-logout');
-    const contenedorSesiones = document.getElementById('contenedor-sesiones');
+    const menuContainer = document.getElementById('dynamic-menu-container');
+    const contenedorPrincipal = document.getElementById('contenedor-principal');
+    const tituloSeccion = document.getElementById('titulo-seccion');
     const mensajeError = document.getElementById('mensaje-error');
-
-    // Token CSRF necesario para Laravel
+    
+    // CSRF Token para Laravel
     const metaToken = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = metaToken ? metaToken.getAttribute('content') : '';
 
-    // --- 2. Estado Inicial: Ocultamos todo hasta saber si hay sesión ---
-    if (vistaLogin) vistaLogin.classList.add('hidden');
-    if (vistaDashboard) vistaDashboard.classList.add('hidden');
-
-    // Verificamos si ya hay una sesión activa al cargar/refrescar la página
+    // --- ARRANQUE ---
     verificarEstadoSesion();
 
-    // --- 3. Lógica de Inicio de Sesión ---
+    // --- LÓGICA DE LOGIN ---
+    const formLogin = document.getElementById('form-login');
     if (formLogin) {
         formLogin.addEventListener('submit', async (e) => {
             e.preventDefault();
+            mensajeError.textContent = "Verificando...";
             
-            // UI: Mostramos que estamos trabajando
-            mensajeError.textContent = "Verificando credenciales...";
-            mensajeError.classList.remove('hidden');
-
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             try {
-                const response = await fetch('/login', {
+                const res = await fetch('/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -42,102 +36,133 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ email, password })
                 });
 
-                if (response.ok) {
-                    // Éxito: Limpiamos error y entramos
+                if (res.ok) {
                     mensajeError.textContent = "";
                     mostrarDashboard();
                 } else {
-                    // Fallo: Obtenemos el mensaje de error del servidor
-                    const data = await response.json();
-                    mensajeError.textContent = data.message || "Email o contraseña incorrectos";
+                    const data = await res.json();
+                    mensajeError.textContent = data.message || "Credenciales incorrectas";
                 }
             } catch (error) {
-                console.error("Error en Login:", error);
-                mensajeError.textContent = "Error de comunicación con el servidor.";
+                mensajeError.textContent = "Error de conexión";
             }
         });
     }
 
-    // --- 4. Lógica de Cierre de Sesión ---
+    // --- LÓGICA DE LOGOUT ---
+    const btnLogout = document.getElementById('btn-logout');
     if (btnLogout) {
         btnLogout.addEventListener('click', async () => {
-            try {
-                await fetch('/logout', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    }
-                });
-            } catch (e) {
-                console.log("Sesión ya cerrada en el servidor");
-            }
-            // Al salir, recargamos la página para resetear todo el estado
+            await fetch('/logout', { 
+                method: 'POST', 
+                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' } 
+            });
             window.location.reload();
         });
     }
 
-    // --- 5. Funciones de Control de Vistas ---
+    // --- FUNCIONES PRINCIPALES ---
 
     function mostrarDashboard() {
         if (vistaLogin) vistaLogin.classList.add('hidden');
         if (vistaDashboard) vistaDashboard.classList.remove('hidden');
-        cargarSesiones();
+        cargarMenuDinamico();
     }
 
-    async function verificarEstadoSesion() {
-        try {
-            // Intentamos acceder a una ruta protegida (las sesiones del ciclista)
-            const response = await fetch('/sesiones-web', {
-                headers: { 'Accept': 'application/json' }
-            });
+    async function cargarMenuDinamico() {
+        if (!menuContainer) return; // Protección contra errores
 
-            if (response.ok) {
-                // Si el servidor responde 200, la sesión es válida -> Dashboard
-                mostrarDashboard();
-            } else {
-                // Si responde 401/419, no hay sesión -> Mostramos el Login
-                if (vistaLogin) vistaLogin.classList.remove('hidden');
-            }
+        try {
+            const res = await fetch('/menus.json');
+            const data = await res.json();
+            
+            menuContainer.innerHTML = ''; // Limpiar menú anterior
+
+            data.opciones.forEach(opcion => {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                
+                const a = document.createElement('a');
+                a.className = 'nav-link';
+                a.textContent = opcion.nombre;
+                a.href = "#";
+                
+                // Al hacer clic, cargamos el módulo correspondiente
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Quitamos clase active de todos y la ponemos al actual
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    a.classList.add('active');
+                    
+                    cargarModulo(opcion.endpoint, opcion.nombre);
+                });
+
+                li.appendChild(a);
+                menuContainer.appendChild(li);
+            });
         } catch (error) {
-            // Si hay error de red, mostramos el login por defecto
-            if (vistaLogin) vistaLogin.classList.remove('hidden');
+            console.error("Error cargando menus.json", error);
+        }
+    }
+
+    // --- ROUTER (Aquí decides qué mostrar según el menú) ---
+    async function cargarModulo(endpoint, nombre) {
+        tituloSeccion.textContent = nombre;
+        contenedorPrincipal.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div> Cargando...</div>';
+
+        if (endpoint === '/sesiones-web') {
+            await cargarSesiones();
+        } else if (endpoint === '/profile') {
+            contenedorPrincipal.innerHTML = '<div class="alert alert-warning">Módulo de Perfil en construcción.</div>';
+        } else {
+            contenedorPrincipal.innerHTML = `<div class="alert alert-info">Bienvenido a la sección ${nombre}</div>`;
         }
     }
 
     async function cargarSesiones() {
-        if (!contenedorSesiones) return;
-        
-        contenedorSesiones.innerHTML = '<p class="text-center">Cargando tus entrenamientos...</p>';
-
         try {
-            const response = await fetch('/sesiones-web', {
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (!response.ok) throw new Error("No autorizado");
-
-            const sesiones = await response.json();
-
-            if (sesiones && sesiones.length > 0) {
-                // Mapeamos los datos de la tabla 'entrenamiento' del SQL
-                contenedorSesiones.innerHTML = sesiones.map(s => `
-                    <div class="card mb-3 shadow-sm border-left-primary">
-                        <div class="card-body">
-                            <h6 class="font-weight-bold text-primary">${s.nombre || 'Sesión de Entrenamiento'}</h6>
-                            <p class="mb-1 text-dark small">${s.recorrido || 'Sin ubicación'}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge badge-secondary">${s.fecha}</span>
-                                <span class="text-muted small">${s.kilometros || 0} km</span>
+            const res = await fetch('/sesiones-web', { headers: { 'Accept': 'application/json' }});
+            if (!res.ok) throw new Error("Error en servidor");
+            
+            const sesiones = await res.json();
+            
+            if (sesiones.length > 0) {
+                // Generamos la tabla de sesiones
+                let html = '<div class="row">';
+                sesiones.forEach(s => {
+                    html += `
+                        <div class="col-md-6 mb-3">
+                            <div class="card shadow-sm border-start border-primary border-5">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">${s.nombre}</h5>
+                                    <p class="card-text text-muted">${s.recorrido}</p>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge bg-secondary">${s.fecha}</span>
+                                        <span class="fw-bold">${s.kilometros} km</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                `).join('');
+                        </div>`;
+                });
+                html += '</div>';
+                contenedorPrincipal.innerHTML = html;
             } else {
-                contenedorSesiones.innerHTML = '<p class="alert alert-info">Aún no tienes entrenamientos registrados.</p>';
+                contenedorPrincipal.innerHTML = '<p>No hay sesiones registradas.</p>';
             }
         } catch (error) {
-            contenedorSesiones.innerHTML = '<p class="text-danger">Error al cargar los datos del ciclista.</p>';
+            contenedorPrincipal.innerHTML = '<div class="alert alert-danger">Error al cargar datos. Revisa la consola.</div>';
+            console.error(error);
+        }
+    }
+
+    async function verificarEstadoSesion() {
+        try {
+            // Hacemos una petición ligera para ver si estamos logueados
+            const res = await fetch('/sesiones-web', { headers: { 'Accept': 'application/json' }});
+            if (res.ok) mostrarDashboard();
+            else if (vistaLogin) vistaLogin.classList.remove('hidden');
+        } catch (e) {
+            if (vistaLogin) vistaLogin.classList.remove('hidden');
         }
     }
 });
