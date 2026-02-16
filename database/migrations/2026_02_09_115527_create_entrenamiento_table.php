@@ -12,12 +12,33 @@ class CreateEntrenamientoTable extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('entrenamiento', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('entrenamiento', function (Blueprint $table) {
+        $table->id();
+        
+        // Relaciones
+        $table->foreignId('id_ciclista')->constrained('ciclista');
+        $table->foreignId('id_bicicleta')->constrained('bicicleta');
+        $table->foreignId('id_sesion')->nullable()->constrained('sesion_entrenamiento')->nullOnDelete();
+        
+        $table->dateTime('fecha');
+        $table->time('duracion');
+        $table->decimal('kilometros', 6, 2);
+        $table->string('recorrido', 150);
+        
+        $table->integer('pulso_medio')->nullable();
+        $table->integer('pulso_max')->nullable();
+        $table->integer('potencia_media')->nullable();
+        $table->integer('potencia_normalizada');
+        $table->decimal('velocidad_media', 5, 2);
+        $table->decimal('puntos_estres_tss', 6, 2)->nullable();
+        $table->decimal('factor_intensidad_if', 4, 3)->nullable();
+        $table->integer('ascenso_metros')->nullable();
+        $table->string('comentario')->nullable();
+        
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

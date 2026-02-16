@@ -12,12 +12,14 @@ class CreateTipoComponenteTable extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('tipo_componente', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('tipo_componente', function (Blueprint $table) {
+        $table->id();
+        $table->string('nombre', 50)->unique();
+        $table->string('descripcion')->nullable();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

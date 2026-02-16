@@ -12,12 +12,15 @@ class CreateBicicletaTable extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('bicicleta', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('bicicleta', function (Blueprint $table) {
+        $table->id();
+        $table->string('nombre', 50);
+        $table->enum('tipo', ['carretera', 'mtb', 'gravel', 'rodillo']);
+        $table->string('comentario')->nullable();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

@@ -13,11 +13,6 @@ class LoginController extends Controller
     |--------------------------------------------------------------------------
     | Login Controller
     |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
     */
 
     use AuthenticatesUsers;
@@ -38,8 +33,36 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    /**
+     * MODIFICACIÓN 1: Interceptar el login exitoso.
+     * Si la petición pide JSON (fetch), devolvemos JSON y no redirigimos.
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Login correcto',
+                'user' => $user,
+                // Puedes enviar la url de redirección por si el JS la necesita
+                'redirect' => $this->redirectTo 
+            ], 200);
+        }
+
+        // Comportamiento normal (si no usas fetch)
+        return redirect()->intended($this->redirectPath());
+    }
+
+    /**
+     * MODIFICACIÓN 2: Interceptar el logout.
+     * Si es por fetch, devolvemos ok sin recargar.
+     */
     protected function loggedOut(Request $request)
     {
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Sesión cerrada correctamente'], 204);
+        }
+
         return redirect('/login');
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BloqueController;
+use App\Http\Controllers\SesionController;
 // Importa aquí el resto de tus controladores según los crees
 
 /*
