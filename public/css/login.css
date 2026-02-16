@@ -1,92 +1,150 @@
-/* ===== FONDO GENERAL ===== */
+/* ===== CONFIGURACIÓN DE COLORES PRO ===== */
+:root {
+    --primary: #2563eb;      /* Azul competición */
+    --accent: #d4ff00;       /* Amarillo flúor (detalles) */
+    --bg-body: #f1f5f9;      /* Gris azulado muy claro */
+    --text-dark: #0f172a;    /* Negro pizarra */
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== BASE ===== */
 body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #e8f0fe; /* azul claro */
+    background-color: var(--bg-body) !important;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--text-dark);
 }
 
-/* ===== CONTENEDOR PRINCIPAL ===== */
-.container {
-    min-height: calc(100vh - 64px); /* altura de la pantalla menos navbar */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 0;
-    padding-bottom: 0;
+/* ===== NAVBAR MODERNA ===== */
+.navbar {
+    background: white !important;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 0.8rem 0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-/* ===== RESETEO DE BOOTSTRAP ===== */
-.row {
-    margin: 0;
+.navbar-brand {
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: var(--primary) !important;
+}
+
+.nav-link {
+    font-weight: 600;
+    color: var(--text-dark) !important;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--primary) !important;
+    transform: translateY(-1px);
+}
+
+/* ===== TARJETA DE LOGIN (ESTILO APP PREMIUM) ===== */
+#section-login {
+    padding-top: 5rem;
 }
 
 .card {
-    margin: 0;
+    border: none !important;
+    border-radius: 20px !important;
+    box-shadow: var(--card-shadow) !important;
+    overflow: hidden;
+    transition: transform 0.3s ease;
 }
 
-/* ===== TARJETA ===== */
-.card {
-    width: 100%;
-    max-width: 420px;
-    border-radius: 8px;
-    border: 1px solid #90caf9;
-}
-
-/* ===== CABECERA ===== */
 .card-header {
-    background-color: #2563eb;
-    color: white;
+    background: var(--primary) !important;
+    color: white !important;
     text-align: center;
-    font-weight: bold;
-    font-size: 1.1rem;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    padding: 1.5rem !important;
+    border: none !important;
 }
 
-/* ===== CUERPO ===== */
 .card-body {
-    padding: 25px;
+    padding: 2.5rem !important;
+    background: white;
 }
 
-/* ===== LABELS ===== */
+/* ===== FORMULARIOS ===== */
 label {
-    color: #1e3a8a;
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
 }
 
-/* ===== INPUTS ===== */
 .form-control {
-    border-radius: 4px;
-    border: 1px solid #90caf9;
+    border-radius: 12px !important;
+    padding: 12px 15px !important;
+    border: 2px solid #e2e8f0 !important;
+    background-color: #f8fafc !important;
+    transition: all 0.3s !important;
 }
 
 .form-control:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
+    background: white !important;
 }
 
-/* ===== BOTÓN ===== */
+/* ===== BOTONES ===== */
 .btn-primary {
-    width: 100%;
-    background-color: #2563eb;
-    border: none;
+    background: var(--primary) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s !important;
+    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39) !important;
 }
 
 .btn-primary:hover {
-    background-color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.23) !important;
+    filter: brightness(1.1);
 }
 
-/* ===== LINKS ===== */
-.btn-link,
-a {
-    color: #2563eb;
-    text-decoration: none;
+/* ===== TABLAS (Para cuando las cargues) ===== */
+.table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
 }
 
-.btn-link:hover,
-a:hover {
-    text-decoration: underline;
+.table thead th {
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1rem;
 }
 
-/* ===== CHECKBOX ===== */
-.form-check-label {
-    color: #1e3a8a;
+.table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+/* ===== UTILIDADES ===== */
+.d-none { display: none !important; }
+
+p {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    line-height: 1.5;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
 }
