@@ -12,19 +12,17 @@ class CreateSesionEntrenamientoTable extends Migration
      * @return void
      */
     public function up()
-{
-    Schema::create('sesion_entrenamiento', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('id_plan')->constrained('plan_entrenamiento')->onDelete('cascade');
-        
-        $table->date('fecha');
-        $table->string('nombre', 100)->nullable();
-        $table->string('descripcion')->nullable();
-        $table->boolean('completada')->default(false);
-        
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('sesion_entrenamiento', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_plan')->constrained('plan_entrenamiento')->onDelete('cascade');
+            $table->date('fecha');
+            $table->string('nombre');
+            $table->text('descripcion')->nullable();
+            $table->boolean('completada')->default(false);
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

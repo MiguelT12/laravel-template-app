@@ -10,28 +10,30 @@ class Ciclista extends Authenticatable
     use Notifiable;
 
     protected $table = 'ciclista';
+    public $timestamps = false; 
 
-    // Campos que se pueden rellenar masivamente
     protected $fillable = [
         'nombre', 
         'apellidos', 
-        'email', 
-        'password', 
         'fecha_nacimiento', 
         'peso_base', 
-        'altura_base'
+        'altura_base', 
+        'email', 
+        'password'
     ];
 
-    // Ocultar la contraseña en las respuestas JSON por seguridad
-    protected $hidden = [
-        'password', 
-        'remember_token',
-    ];
+    protected $hidden = ['password'];
 
-    public $timestamps = false;
-
-    public function planes()
-    {
+    // Estas son las relaciones del diagrama modelo entidad-relacion
+    public function planes() {
         return $this->hasMany(PlanEntrenamiento::class, 'id_ciclista');
+    }
+    
+    public function bicicletas() {
+        return $this->hasMany(Bicicleta::class, 'id_ciclista');
+    }
+
+    public function historicos() {
+        return $this->hasMany(HistoricoCiclista::class, 'id_ciclista');
     }
 }

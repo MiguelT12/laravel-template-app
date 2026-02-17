@@ -1,0 +1,157 @@
+/* === ESTILOS GENERALES (Reset básico) === */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        h2, h3, h4, h5 { margin-top: 0; }
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-danger { color: #dc3545; font-size: 0.9em; }
+        .text-muted { color: #6c757d; font-size: 0.9em; }
+        hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
+
+        /* === CONTENEDORES === */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* === PANTALLA DE LOGIN === */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .card-login {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: bold; }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Para que el padding no rompa el ancho */
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            color: white;
+            width: 100%; /* Botón ancho en login */
+        }
+        .btn-primary:hover { background-color: #0b5ed7; }
+
+        /* === BARRA DE NAVEGACIÓN (NAVBAR) === */
+        .navbar {
+            background-color: #212529;
+            color: white;
+            padding: 1rem 0;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        #dynamic-menu-container {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-link:hover, .nav-link.active { color: white; }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+        .btn-logout:hover { background: #dc3545; color: white; }
+
+        /* === TARJETAS DE ENTRENAMIENTO (Generadas por JS) === */
+        /* Estas clases imitan a Bootstrap porque tu JS genera HTML con estas clases */
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 0; /* Controlado por el grid gap */
+        }
+        
+        .card-body { padding: 1.25rem; }
+        .card-title { font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: bold; color: #0d6efd; }
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #fff;
+            background-color: #6c757d;
+            border-radius: 0.25rem;
+            text-align: center;
+        }
+
+        /* Mensajes de Alerta */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+        .alert-info { background-color: #cff4fc; border-color: #b6effb; color: #055160; }
+        .alert-danger { background-color: #f8d7da; border-color: #f5c6cb; color: #842029; }

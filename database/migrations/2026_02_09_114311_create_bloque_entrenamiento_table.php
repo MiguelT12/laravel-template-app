@@ -12,24 +12,27 @@ class CreateBloqueEntrenamientoTable extends Migration
      * @return void
      */
     public function up()
-{
-    Schema::create('bloque_entrenamiento', function (Blueprint $table) {
-        $table->id();
-        $table->string('nombre', 100);
-        $table->string('descripcion')->nullable();
-        // Enum según tu SQL
-        $table->enum('tipo', ['rodaje', 'intervalos', 'fuerza', 'recuperacion', 'test']);
-        
-        $table->time('duracion_estimada')->nullable();
-        $table->decimal('potencia_pct_min', 5, 2)->nullable();
-        $table->decimal('potencia_pct_max', 5, 2)->nullable();
-        $table->decimal('pulso_pct_max', 5, 2)->nullable();
-        $table->decimal('pulso_reserva_pct', 5, 2)->nullable();
-        $table->string('comentario')->nullable();
-        
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('bloque_entrenamiento', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre', 100);
+            $table->string('descripcion')->nullable();
+            
+            // CAMBIO 1: Usamos string para que acepte "Calentamiento", "Series", etc.
+            $table->string('tipo'); 
+            
+            // CAMBIO 2: Usamos integer para guardar los minutos (ej: 20) en vez de formato hora
+            $table->integer('duracion_estimada')->nullable(); 
+
+            $table->decimal('potencia_pct_min', 5, 2)->nullable();
+            $table->decimal('potencia_pct_max', 5, 2)->nullable();
+            $table->decimal('pulso_pct_max', 5, 2)->nullable();
+            $table->decimal('pulso_reserva_pct', 5, 2)->nullable();
+            $table->string('comentario')->nullable();
+            
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.
