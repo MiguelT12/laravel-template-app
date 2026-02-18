@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\SesionController; // Asegúrate de importar esto
+use Illuminate\Http\Request;
+use App\Http\Controllers\SesionController;
 
 // Ruta principal (SPA)
 Route::get('/', function () {
@@ -11,6 +12,13 @@ Route::get('/', function () {
 
 // Rutas de autenticación generadas por la profesora
 Auth::routes();
+Route::get('/csrf-token', function (Request $request) {
+    $request->session()->regenerateToken();
+
+    return response()->json([
+        'token' => csrf_token()
+    ]);
+});
 
 // --- NUEVA RUTA: DATOS PARA FETCH ---
 // Usamos el middleware 'auth' normal (no sanctum) porque usamos cookies

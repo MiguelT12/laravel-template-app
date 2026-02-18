@@ -10,7 +10,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // CSRF Token para Laravel
     const metaToken = document.querySelector('meta[name="csrf-token"]');
-    const csrfToken = metaToken ? metaToken.getAttribute('content') : '';
+    let csrfToken = metaToken ? metaToken.getAttribute('content') : '';
+
+    async function refrescarCsrfToken() {
+        try {
+            const res = await fetch('/csrf-token', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.token) {
+                    csrfToken = data.token;
+                    if (metaToken) metaToken.setAttribute('content', csrfToken);
+                }
+            }
+        } catch (e) {}
+    }
 
     // --- ARRANQUE ---
     verificarEstadoSesion();
@@ -26,15 +48,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('password').value;
 
             try {
-                const res = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({ email, password })
-                });
+                await refrescarCsrfToken();
+                const hacerLogin = async () => {
+                    const body = new URLSearchParams();
+                    body.append('_token', csrfToken);
+                    body.append('email', email);
+                    body.append('password', password);
+
+                    return fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        credentials: 'same-origin',
+                        body: body.toString()
+                    });
+                };
+
+                let res = await hacerLogin();
+                if (res.status === 419) {
+                    await refrescarCsrfToken();
+                    res = await hacerLogin();
+                }
 
                 if (res.ok) {
                     mensajeError.textContent = "";
@@ -50,14 +88,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DE LOGOUT ---
-    const btnLogout = document.getElementById('btn-logout');
-    if (btnLogout) {
-        btnLogout.addEventListener('click', async () => {
-            await fetch('/logout', { 
-                method: 'POST', 
-                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' } 
-            });
-            window.location.reload();
+    const formLogout = document.getElementById('form-logout');
+    if (formLogout) {
+        formLogout.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await refrescarCsrfToken();
+                const hacerLogout = async () => {
+                    const body = new URLSearchParams();
+                    body.append('_token', csrfToken);
+
+                    return fetch('/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        credentials: 'same-origin',
+                        cache: 'no-store',
+                        body: body.toString()
+                    });
+                };
+
+                let res = await hacerLogout();
+                if (res.status === 419) {
+                    await refrescarCsrfToken();
+                    res = await hacerLogout();
+                }
+            } finally {
+                await refrescarCsrfToken();
+                if (vistaDashboard) vistaDashboard.classList.add('hidden');
+                if (vistaLogin) vistaLogin.classList.remove('hidden');
+                if (menuContainer) menuContainer.innerHTML = '';
+                if (tituloSeccion) tituloSeccion.textContent = 'Bienvenido';
+                if (contenedorPrincipal) {
+                    contenedorPrincipal.innerHTML = '<div class="alert alert-info text-center">Selecciona una opcion del menu para comenzar.</div>';
+                }
+            }
         });
     }
 
@@ -70,38 +139,86 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function cargarMenuDinamico() {
-        if (!menuContainer) return; // Protección contra errores
+        if (!menuContainer) return; // Proteccion contra errores
 
         try {
             const res = await fetch('/menus.json');
             const data = await res.json();
-            
-            menuContainer.innerHTML = ''; // Limpiar menú anterior
+            const opciones = Array.isArray(data.opciones) ? data.opciones : [];
 
-            data.opciones.forEach(opcion => {
+            menuContainer.innerHTML = ''; // Limpiar menu anterior
+
+            opciones.forEach(opcion => {
                 const li = document.createElement('li');
                 li.className = 'nav-item';
-                
-                const a = document.createElement('a');
-                a.className = 'nav-link';
-                a.textContent = opcion.nombre;
-                a.href = "#";
-                
-                // Al hacer clic, cargamos el módulo correspondiente
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // Quitamos clase active de todos y la ponemos al actual
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    a.classList.add('active');
-                    
-                    cargarModulo(opcion.endpoint, opcion.nombre);
-                });
 
-                li.appendChild(a);
+                if (Array.isArray(opcion.submenu) && opcion.submenu.length > 0) {
+                    li.classList.add('has-submenu');
+
+                    const toggle = document.createElement('button');
+                    toggle.className = 'nav-link nav-toggle';
+                    toggle.type = 'button';
+                    toggle.textContent = opcion.nombre;
+                    li.appendChild(toggle);
+
+                    const submenu = document.createElement('ul');
+                    submenu.className = 'submenu';
+
+                    opcion.submenu.forEach(subopcion => {
+                        const subLi = document.createElement('li');
+
+                        const subA = document.createElement('a');
+                        subA.className = 'nav-link submenu-link';
+                        subA.textContent = subopcion.nombre;
+                        subA.href = '#';
+                        subA.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                            subA.classList.add('active');
+                            cargarModulo(subopcion.endpoint, subopcion.nombre);
+                            li.classList.remove('open');
+                        });
+
+                        subLi.appendChild(subA);
+                        submenu.appendChild(subLi);
+                    });
+
+                    toggle.addEventListener('click', () => {
+                        const isOpen = li.classList.contains('open');
+                        document.querySelectorAll('.nav-item.has-submenu.open').forEach(item => item.classList.remove('open'));
+                        if (!isOpen) li.classList.add('open');
+                    });
+
+                    li.appendChild(submenu);
+                } else {
+                    const a = document.createElement('a');
+                    a.className = 'nav-link';
+                    a.textContent = opcion.nombre;
+                    a.href = '#';
+
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        a.classList.add('active');
+                        cargarModulo(opcion.endpoint, opcion.nombre);
+                    });
+
+                    li.appendChild(a);
+                }
+
                 menuContainer.appendChild(li);
             });
+
+            if (!menuContainer.dataset.clickOutsideBound) {
+                document.addEventListener('click', (e) => {
+                    if (!menuContainer.contains(e.target)) {
+                        document.querySelectorAll('.nav-item.has-submenu.open').forEach(item => item.classList.remove('open'));
+                    }
+                });
+                menuContainer.dataset.clickOutsideBound = '1';
+            }
         } catch (error) {
-            console.error("Error cargando menus.json", error);
+            console.error('Error cargando menus.json', error);
         }
     }
 
@@ -157,12 +274,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function verificarEstadoSesion() {
         try {
-            // Hacemos una petición ligera para ver si estamos logueados
-            const res = await fetch('/sesiones-web', { headers: { 'Accept': 'application/json' }});
-            if (res.ok) mostrarDashboard();
+            // Verificamos sesion solo si recibimos JSON real
+            const res = await fetch('/sesiones-web', {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
+            const contentType = res.headers.get('content-type') || '';
+            const esJson = contentType.includes('application/json');
+
+            if (res.ok && esJson) mostrarDashboard();
             else if (vistaLogin) vistaLogin.classList.remove('hidden');
         } catch (e) {
             if (vistaLogin) vistaLogin.classList.remove('hidden');
         }
     }
 });
+
+
+

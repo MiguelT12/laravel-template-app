@@ -10,7 +10,29 @@
     },
     {
       "nombre": "Entrenamientos",
-      "endpoint": "/entrenamientos"
+      "submenu": [
+        {
+          "nombre": "Sesiones",
+          "endpoint": "/sesiones-web"
+        },
+        {
+          "nombre": "Estadisticas",
+          "endpoint": "/estadisticas"
+        }
+      ]
+    },
+    {
+      "nombre": "Ayuda",
+      "submenu": [
+        {
+          "nombre": "Contacto",
+          "endpoint": "/contacto"
+        },
+        {
+          "nombre": "FAQ",
+          "endpoint": "/faq"
+        }
+      ]
     }
   ]
 }
