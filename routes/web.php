@@ -4,33 +4,54 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SesionController;
+use App\Http\Controllers\BloqueController;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
-| WEB ROUTES
+| HOME SPA
 |--------------------------------------------------------------------------
 */
 
-// Página principal
 Route::get('/', function () {
-    return view('index'); // tu SPA principal
+    return view('index');
 });
 
-// Auth Laravel
-Auth::routes();
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 
-// Token CSRF para fetch
+Auth::routes();
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
+
+/*
+|--------------------------------------------------------------------------
+| CSRF TOKEN FETCH
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/csrf-token', function (Request $request) {
     $request->session()->regenerateToken();
-
-    return response()->json([
-        'token' => csrf_token()
-    ]);
+    return response()->json(['token' => csrf_token()]);
 });
 
-// Rutas protegidas
-Route::middleware(['auth'])->group(function () {
+/*
+|--------------------------------------------------------------------------
+| RUTAS PROTEGIDAS
+|--------------------------------------------------------------------------
+*/
 
+Route::middleware('auth')->group(function () {
+
+    // SESIONES
     Route::get('/sesiones-web', [SesionController::class, 'index']);
+
+    // BLOQUES CRUD
+    Route::get('/bloques', [BloqueController::class, 'index']);
+    Route::post('/bloques', [BloqueController::class, 'store']);
+    Route::delete('/bloques/{id}', [BloqueController::class, 'destroy']);
+    Route::get('/bloques/{id}', [BloqueController::class, 'show']);
 
 });

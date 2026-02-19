@@ -7,7 +7,11 @@
 
     <title>Gestión Ciclista</title>
 
+    <!-- TU CSS -->
     <link href="{{ asset('css/index.css') }}" rel="stylesheet">
+
+    <!-- BOOTSTRAP (NECESARIO para botones, cards, layout, etc) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -24,18 +28,18 @@
         <form id="form-login">
             @csrf
 
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label>Email</label>
-                <input type="email" id="email" placeholder="migue@test.com" required>
+                <input type="email" id="email" class="form-control" placeholder="migue@test.com" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>Contraseña</label>
-                <input type="password" id="password" placeholder="123456" required>
+                <input type="password" id="password" class="form-control" placeholder="123456" required>
             </div>
 
-            <button type="submit">Entrar</button>
-            <p id="mensaje-error"></p>
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            <p id="mensaje-error" class="text-danger mt-2 text-center"></p>
         </form>
 
         <!-- LINK REGISTRO -->
@@ -55,21 +59,21 @@
             <form method="POST" action="{{ route('register') }}">
                 @csrf
 
-                <input type="text" name="nombre" placeholder="Nombre" required>
-                <input type="text" name="apellidos" placeholder="Apellidos" required>
+                <input class="form-control mb-2" type="text" name="nombre" placeholder="Nombre" required>
+                <input class="form-control mb-2" type="text" name="apellidos" placeholder="Apellidos" required>
 
                 <label>Fecha nacimiento</label>
-                <input type="date" name="fecha_nacimiento" required>
+                <input class="form-control mb-2" type="date" name="fecha_nacimiento" required>
 
-                <input type="number" step="0.01" name="peso_base" placeholder="Peso (kg)">
-                <input type="number" name="altura_base" placeholder="Altura (cm)">
+                <input class="form-control mb-2" type="number" step="0.01" name="peso_base" placeholder="Peso (kg)">
+                <input class="form-control mb-2" type="number" name="altura_base" placeholder="Altura (cm)">
 
-                <input type="email" name="email" placeholder="Email" required>
+                <input class="form-control mb-2" type="email" name="email" placeholder="Email" required>
 
-                <input type="password" name="password" placeholder="Contraseña" required>
-                <input type="password" name="password_confirmation" placeholder="Confirmar contraseña" required>
+                <input class="form-control mb-2" type="password" name="password" placeholder="Contraseña" required>
+                <input class="form-control mb-3" type="password" name="password_confirmation" placeholder="Confirmar contraseña" required>
 
-                <button type="submit">Crear cuenta</button>
+                <button class="btn btn-success w-100" type="submit">Crear cuenta</button>
             </form>
 
         </div>
@@ -84,22 +88,20 @@
 
 <div id="vista-dashboard" class="hidden">
 
-    <nav class="navbar">
-        <div class="navbar-content">
-            <a class="navbar-brand">CicloApp</a>
+    <nav class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand">CicloApp</span>
 
-            <ul id="dynamic-menu-container"></ul>
+            <ul id="dynamic-menu-container" class="nav"></ul>
 
-            <div>
-                <form id="form-logout" method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-logout">Cerrar Sesión</button>
-                </form>
-            </div>
+            <form id="form-logout" method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
+            </form>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container mt-4">
         <h2 id="titulo-seccion">Bienvenido</h2>
         <hr>
 
@@ -118,6 +120,9 @@
 ====================================================== -->
 
 <script src="{{ asset('js/app.js') }}"></script>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 function mostrarRegistro() {

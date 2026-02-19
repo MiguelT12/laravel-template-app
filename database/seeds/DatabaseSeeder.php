@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         // 2. CREAR BLOQUES DE ENTRENAMIENTO (Los tipos de ejercicio) [cite: 124]
         $bloqueCalentamiento = BloqueEntrenamiento::create([
+            'id_ciclista' => $ciclista->id,  
             'nombre' => 'Calentamiento Estándar',
             'descripcion' => 'Rodar suave incrementando cadencia',
             'tipo' => 'Calentamiento',
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $bloqueSeries = BloqueEntrenamiento::create([
+            'id_ciclista' => $ciclista->id,  
             'nombre' => 'Series Umbral',
             'descripcion' => 'Intervalos de alta intensidad',
             'tipo' => 'Series',

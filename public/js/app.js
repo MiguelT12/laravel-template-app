@@ -7,72 +7,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const contenedorPrincipal = document.getElementById('contenedor-principal');
     const tituloSeccion = document.getElementById('titulo-seccion');
     const mensajeError = document.getElementById('mensaje-error');
-    
-    // CSRF Token para Laravel
+
+    // CSRF Token Laravel
     const metaToken = document.querySelector('meta[name="csrf-token"]');
     let csrfToken = metaToken ? metaToken.getAttribute('content') : '';
 
     async function refrescarCsrfToken() {
         try {
             const res = await fetch('/csrf-token', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
+                headers: { 'Accept': 'application/json' },
                 credentials: 'same-origin',
                 cache: 'no-store'
             });
 
             if (res.ok) {
                 const data = await res.json();
-                if (data && data.token) {
-                    csrfToken = data.token;
-                    if (metaToken) metaToken.setAttribute('content', csrfToken);
-                }
+                csrfToken = data.token;
+                metaToken.setAttribute('content', csrfToken);
             }
-        } catch (e) {}
+        } catch {}
     }
 
     // --- ARRANQUE ---
     verificarEstadoSesion();
 
-    // --- LÓGICA DE LOGIN ---
+    // ================= LOGIN =================
     const formLogin = document.getElementById('form-login');
+
     if (formLogin) {
         formLogin.addEventListener('submit', async (e) => {
             e.preventDefault();
+
             mensajeError.textContent = "Verificando...";
-            
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             try {
                 await refrescarCsrfToken();
-                const hacerLogin = async () => {
-                    const body = new URLSearchParams();
-                    body.append('_token', csrfToken);
-                    body.append('email', email);
-                    body.append('password', password);
 
-                    return fetch('/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        credentials: 'same-origin',
-                        body: body.toString()
-                    });
-                };
+                const body = new URLSearchParams();
+                body.append('_token', csrfToken);
+                body.append('email', email);
+                body.append('password', password);
 
-                let res = await hacerLogin();
-                if (res.status === 419) {
-                    await refrescarCsrfToken();
-                    res = await hacerLogin();
-                }
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    credentials: 'same-origin',
+                    body: body.toString()
+                });
 
                 if (res.ok) {
                     mensajeError.textContent = "";
@@ -81,218 +69,357 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await res.json();
                     mensajeError.textContent = data.message || "Credenciales incorrectas";
                 }
-            } catch (error) {
+
+            } catch {
                 mensajeError.textContent = "Error de conexión";
             }
         });
     }
 
-    // --- LÓGICA DE LOGOUT ---
+    // ================= LOGOUT =================
     const formLogout = document.getElementById('form-logout');
+
     if (formLogout) {
         formLogout.addEventListener('submit', async (e) => {
             e.preventDefault();
-            try {
-                await refrescarCsrfToken();
-                const hacerLogout = async () => {
-                    const body = new URLSearchParams();
-                    body.append('_token', csrfToken);
 
-                    return fetch('/logout', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        credentials: 'same-origin',
-                        cache: 'no-store',
-                        body: body.toString()
-                    });
-                };
+            await refrescarCsrfToken();
 
-                let res = await hacerLogout();
-                if (res.status === 419) {
-                    await refrescarCsrfToken();
-                    res = await hacerLogout();
-                }
-            } finally {
-                await refrescarCsrfToken();
-                if (vistaDashboard) vistaDashboard.classList.add('hidden');
-                if (vistaLogin) vistaLogin.classList.remove('hidden');
-                if (menuContainer) menuContainer.innerHTML = '';
-                if (tituloSeccion) tituloSeccion.textContent = 'Bienvenido';
-                if (contenedorPrincipal) {
-                    contenedorPrincipal.innerHTML = '<div class="alert alert-info text-center">Selecciona una opcion del menu para comenzar.</div>';
-                }
-            }
+            await fetch('/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                credentials: 'same-origin',
+                body: `_token=${csrfToken}`
+            });
+
+            vistaDashboard.classList.add('hidden');
+            vistaLogin.classList.remove('hidden');
+            menuContainer.innerHTML = '';
         });
     }
 
-    // --- FUNCIONES PRINCIPALES ---
-
+    // ================= DASHBOARD =================
     function mostrarDashboard() {
-        if (vistaLogin) vistaLogin.classList.add('hidden');
-        if (vistaDashboard) vistaDashboard.classList.remove('hidden');
+        vistaLogin.classList.add('hidden');
+        vistaDashboard.classList.remove('hidden');
         cargarMenuDinamico();
     }
 
+    // ================= MENU DINÁMICO =================
     async function cargarMenuDinamico() {
-        if (!menuContainer) return; // Proteccion contra errores
+        const res = await fetch('/menus.json');
+        const data = await res.json();
 
-        try {
-            const res = await fetch('/menus.json');
-            const data = await res.json();
-            const opciones = Array.isArray(data.opciones) ? data.opciones : [];
+        menuContainer.innerHTML = '';
 
-            menuContainer.innerHTML = ''; // Limpiar menu anterior
+        data.opciones.forEach(opcion => {
 
-            opciones.forEach(opcion => {
-                const li = document.createElement('li');
-                li.className = 'nav-item';
+            const li = document.createElement('li');
+            li.className = 'nav-item';
 
-                if (Array.isArray(opcion.submenu) && opcion.submenu.length > 0) {
-                    li.classList.add('has-submenu');
+            // CON SUBMENU
+            if (opcion.submenu) {
 
-                    const toggle = document.createElement('button');
-                    toggle.className = 'nav-link nav-toggle';
-                    toggle.type = 'button';
-                    toggle.textContent = opcion.nombre;
-                    li.appendChild(toggle);
+                li.classList.add('has-submenu');
 
-                    const submenu = document.createElement('ul');
-                    submenu.className = 'submenu';
+                const toggle = document.createElement('button');
+                toggle.textContent = opcion.nombre;
+                toggle.className = 'nav-link';
+                li.appendChild(toggle);
 
-                    opcion.submenu.forEach(subopcion => {
-                        const subLi = document.createElement('li');
+                const submenu = document.createElement('ul');
+                submenu.className = 'submenu';
 
-                        const subA = document.createElement('a');
-                        subA.className = 'nav-link submenu-link';
-                        subA.textContent = subopcion.nombre;
-                        subA.href = '#';
-                        subA.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                            subA.classList.add('active');
-                            cargarModulo(subopcion.endpoint, subopcion.nombre);
-                            li.classList.remove('open');
-                        });
+                opcion.submenu.forEach(sub => {
 
-                        subLi.appendChild(subA);
-                        submenu.appendChild(subLi);
-                    });
+                    const subLi = document.createElement('li');
+                    const subA = document.createElement('a');
 
-                    toggle.addEventListener('click', () => {
-                        const isOpen = li.classList.contains('open');
-                        document.querySelectorAll('.nav-item.has-submenu.open').forEach(item => item.classList.remove('open'));
-                        if (!isOpen) li.classList.add('open');
-                    });
+                    subA.textContent = sub.nombre;
+                    subA.href = "#";
 
-                    li.appendChild(submenu);
-                } else {
-                    const a = document.createElement('a');
-                    a.className = 'nav-link';
-                    a.textContent = opcion.nombre;
-                    a.href = '#';
-
-                    a.addEventListener('click', (e) => {
+                    subA.addEventListener('click', (e) => {
                         e.preventDefault();
-                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                        a.classList.add('active');
-                        cargarModulo(opcion.endpoint, opcion.nombre);
+                        cargarModulo(sub.endpoint, sub.nombre);
+                        li.classList.remove('open');
                     });
 
-                    li.appendChild(a);
-                }
+                    subLi.appendChild(subA);
+                    submenu.appendChild(subLi);
+                });
 
-                menuContainer.appendChild(li);
+                toggle.addEventListener('click', () => {
+                    li.classList.toggle('open');
+                });
+
+                li.appendChild(submenu);
+
+            } else {
+                const a = document.createElement('a');
+                a.textContent = opcion.nombre;
+                a.href = "#";
+                a.className = 'nav-link';
+
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    cargarModulo(opcion.endpoint, opcion.nombre);
+                });
+
+                li.appendChild(a);
+            }
+
+            menuContainer.appendChild(li);
+        });
+    }
+
+    
+
+
+    // ================= SESIONES =================
+    async function cargarSesiones() {
+
+        const res = await fetch('/sesiones-web');
+        const sesiones = await res.json();
+
+        let html = '<h3>Sesiones</h3>';
+
+        sesiones.forEach(s => {
+            html += `
+                <div class="card">
+                    <h5>${s.nombre}</h5>
+                    <p>${s.recorrido}</p>
+                    <small>${s.fecha} - ${s.kilometros} km</small>
+                </div>
+            `;
+        });
+
+        contenedorPrincipal.innerHTML = html;
+    }
+
+    // ================= BLOQUES =================
+    window.cargarBloques = async function () {
+        try {
+            const res = await fetch('/bloques', {
+                headers: {
+                    'Accept': 'application/json'
+                }
             });
 
-            if (!menuContainer.dataset.clickOutsideBound) {
-                document.addEventListener('click', (e) => {
-                    if (!menuContainer.contains(e.target)) {
-                        document.querySelectorAll('.nav-item.has-submenu.open').forEach(item => item.classList.remove('open'));
-                    }
-                });
-                menuContainer.dataset.clickOutsideBound = '1';
+            if (!res.ok) throw new Error("Error cargando bloques");
+
+            const bloques = await res.json();
+
+            if (bloques.length === 0) {
+                contenedorPrincipal.innerHTML =
+                    '<div class="alert alert-info">No hay bloques creados</div>';
+                return;
             }
+
+            let html = `
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Duración</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            bloques.forEach(b => {
+                html += `
+                    <tr>
+                        <td>${b.id}</td>
+                        <td>${b.nombre}</td>
+                        <td>${b.tipo}</td>
+                        <td>${b.duracion_estimada ?? '-'}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm"
+                                onclick="eliminarBloque(${b.id})">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+
+            contenedorPrincipal.innerHTML = html;
+
         } catch (error) {
-            console.error('Error cargando menus.json', error);
+            console.error(error);
+            contenedorPrincipal.innerHTML =
+                '<div class="alert alert-danger">Error cargando bloques</div>';
         }
     }
 
-    // --- ROUTER (Aquí decides qué mostrar según el menú) ---
+
+      
+
+    // ================= VERIFICAR SESIÓN =================
+    async function verificarEstadoSesion() {
+        try {
+            const res = await fetch('/sesiones-web', {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (res.ok) mostrarDashboard();
+        } catch {
+            vistaLogin.classList.remove('hidden');
+        }
+    }
+
+    window.mostrarFormBloque = function () {
+
+        const html = `
+            <div class="card p-4">
+                <h4>Nuevo bloque</h4>
+
+                <input id="bloqueNombre" class="form-control mb-2" placeholder="Nombre">
+
+                <input id="bloqueTipo" class="form-control mb-2" placeholder="Tipo">
+
+                <input id="bloqueDuracion" class="form-control mb-2"
+                    type="number" placeholder="Duración minutos">
+
+                <button class="btn btn-success" onclick="crearBloque()">
+                    Guardar
+                </button>
+
+                <button class="btn btn-secondary" onclick="cargarBloques()">
+                    Cancelar
+                </button>
+            </div>
+        `;
+
+        document.getElementById('contenedor-principal').innerHTML = html;
+    }
+
+    window.crearBloque = async function () {
+
+        const nombre = document.getElementById('bloqueNombre').value;
+        const tipo = document.getElementById('bloqueTipo').value;
+        const duracion = document.getElementById('bloqueDuracion').value;
+
+        if (!nombre || !tipo) {
+            alert("Nombre y tipo son obligatorios");
+            return;
+        }
+
+        try {
+
+            const res = await fetch('/bloques', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    nombre: nombre,
+                    tipo: tipo,
+                    duracion_estimada: duracion
+                })
+            });
+
+            if (!res.ok) throw new Error();
+
+            alert("Bloque creado correctamente");
+
+            // volver a la lista
+            cargarBloques();
+
+        } catch (error) {
+            console.error(error);
+            alert("Error creando bloque");
+        }
+    }
+
+
+
+
     async function cargarModulo(endpoint, nombre) {
+
         tituloSeccion.textContent = nombre;
-        contenedorPrincipal.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div> Cargando...</div>';
 
         if (endpoint === '/sesiones-web') {
             await cargarSesiones();
-        } else if (endpoint === '/profile') {
-            contenedorPrincipal.innerHTML = '<div class="alert alert-warning">Módulo de Perfil en construcción.</div>';
-        } else {
-            contenedorPrincipal.innerHTML = `<div class="alert alert-info">Bienvenido a la sección ${nombre}</div>`;
+            return;
         }
+
+        if (endpoint === '/bloques') {
+            mostrarPanelBloques();
+            return;
+        }
+
+        if (endpoint === '/profile') {
+            contenedorPrincipal.innerHTML =
+                '<div class="alert alert-warning">Perfil en construcción</div>';
+            return;
+        }
+
+        contenedorPrincipal.innerHTML =
+            `<div class="alert alert-info">Bienvenido a la sección ${nombre}</div>`;
     }
 
-    async function cargarSesiones() {
-        try {
-            const res = await fetch('/sesiones-web', { headers: { 'Accept': 'application/json' }});
-            if (!res.ok) throw new Error("Error en servidor");
-            
-            const sesiones = await res.json();
-            
-            if (sesiones.length > 0) {
-                // Generamos la tabla de sesiones
-                let html = '<div class="row">';
-                sesiones.forEach(s => {
-                    html += `
-                        <div class="col-md-6 mb-3">
-                            <div class="card shadow-sm border-start border-primary border-5">
-                                <div class="card-body">
-                                    <h5 class="card-title text-primary">${s.nombre}</h5>
-                                    <p class="card-text text-muted">${s.recorrido}</p>
-                                    <div class="d-flex justify-content-between">
-                                        <span class="badge bg-secondary">${s.fecha}</span>
-                                        <span class="fw-bold">${s.kilometros} km</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-                html += '</div>';
-                contenedorPrincipal.innerHTML = html;
-            } else {
-                contenedorPrincipal.innerHTML = '<p>No hay sesiones registradas.</p>';
-            }
-        } catch (error) {
-            contenedorPrincipal.innerHTML = '<div class="alert alert-danger">Error al cargar datos. Revisa la consola.</div>';
-            console.error(error);
-        }
-    }
 
-    async function verificarEstadoSesion() {
+    window.eliminarBloque = async function (id) {
+
+        if (!confirm("¿Eliminar bloque?")) return;
+
         try {
-            // Verificamos sesion solo si recibimos JSON real
-            const res = await fetch('/sesiones-web', {
+            const res = await fetch(`/bloques/${id}`, {
+                method: 'DELETE',
                 headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin',
-                cache: 'no-store'
+                    'X-CSRF-TOKEN': csrfToken
+                }
             });
-            const contentType = res.headers.get('content-type') || '';
-            const esJson = contentType.includes('application/json');
 
-            if (res.ok && esJson) mostrarDashboard();
-            else if (vistaLogin) vistaLogin.classList.remove('hidden');
-        } catch (e) {
-            if (vistaLogin) vistaLogin.classList.remove('hidden');
+            if (!res.ok) throw new Error();
+
+            cargarBloques();
+
+        } catch {
+            alert("Error eliminando bloque");
         }
     }
+
+
+    function mostrarPanelBloques() {
+
+        contenedorPrincipal.innerHTML = `
+            <div class="card p-4 shadow-sm">
+
+                <h4 class="mb-3">Gestión de bloques</h4>
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <button class="btn btn-primary w-100 mb-2" onclick="cargarBloques()">
+                    Ver bloques
+                </button>
+
+
+                    <button class="btn btn-success"
+                            onclick="mostrarFormBloque()">
+                        Crear bloque
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+
+
+
+
 });
-
-
-

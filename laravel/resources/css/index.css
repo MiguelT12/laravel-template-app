@@ -1,0 +1,77 @@
+/* NAVBAR */
+
+.navbar {
+    background: #1f252b;
+    padding: 15px 30px;
+}
+
+.navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-brand {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* MENU HORIZONTAL */
+
+.menu {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.menu li {
+    position: relative;
+}
+
+.menu a {
+    color: #cfd6dc;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.menu a:hover {
+    color: white;
+}
+
+/* DROPDOWN */
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background: #2f343a;
+    padding: 10px 0;
+    border-radius: 6px;
+    min-width: 150px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.dropdown-menu li {
+    padding: 8px 15px;
+}
+
+.dropdown-menu a {
+    color: white;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* LOGOUT */
+
+.btn-logout {
+    border: 1px solid red;
+    color: red;
+    background: transparent;
+    padding: 5px 12px;
+}

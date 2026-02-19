@@ -16,6 +16,10 @@
           "endpoint": "/sesiones-web"
         },
         {
+          "nombre": "Bloques",
+          "endpoint": "/bloques"
+        },
+        {
           "nombre": "Estadisticas",
           "endpoint": "/estadisticas"
         }

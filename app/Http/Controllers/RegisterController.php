@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Ciclista;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
+class RegisterController extends Controller
+{
+    public function register(Request $request)
+    {
+        // VALIDACIÓN
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:80',
+            'apellidos' => 'required|string|max:80',
+            'fecha_nacimiento' => 'required|date',
+            'email' => 'required|email|unique:ciclista,email',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // CREAR CICLISTA
+        $ciclista = Ciclista::create([
+            'nombre' => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'fecha_nacimiento' => $request->fecha_nacimiento,
+            'peso_base' => $request->peso_base,
+            'altura_base' => $request->altura_base,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
+
+        // LOGIN AUTOMÁTICO
+        Auth::login($ciclista);
+
+        // REDIRIGIR AL DASHBOARD
+        return redirect('/')->with('success', 'Cuenta creada correctamente');
+    }
+}
