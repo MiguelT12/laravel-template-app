@@ -44,6 +44,44 @@
                         </g>
                     </svg>
                 </div>
+                @guest
+                <div class="text-center mt-6">
+                    <p class="text-lg text-gray-700 dark:text-gray-300">
+                        ¿No tienes una cuenta?
+                        <a href="#" onclick="mostrarRegistro()">
+                            Regístrate
+                        </a>
+                    </p>
+                </div>
+                @endguest
+
+                <div id="registroForm" style="display:none; margin-top:20px;">
+
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
+
+                        <input type="text" name="name" placeholder="Nombre"
+                            style="display:block;margin:5px auto;padding:8px;width:250px;" required>
+
+                        <input type="email" name="email" placeholder="Email"
+                            style="display:block;margin:5px auto;padding:8px;width:250px;" required>
+
+                        <input type="password" name="password" placeholder="Contraseña"
+                            style="display:block;margin:5px auto;padding:8px;width:250px;" required>
+
+                        <input type="password" name="password_confirmation" placeholder="Confirmar contraseña"
+                            style="display:block;margin:5px auto;padding:8px;width:250px;" required>
+
+                        <button type="submit"
+                                style="margin-top:10px;padding:10px 20px;background:red;color:white;border:none;border-radius:5px;">
+                            Crear cuenta
+                        </button>
+
+                    </form>
+
+                </div>
+
+
 
                 <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
                     <div class="grid grid-cols-1 md:grid-cols-2">
@@ -128,5 +166,11 @@
                 </div>
             </div>
         </div>
+    <script>
+    function mostrarRegistro() {
+        const form = document.getElementById("registroForm");
+        form.style.display = "block";
+    }
+    </script>
     </body>
 </html>
