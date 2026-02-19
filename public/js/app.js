@@ -106,6 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
         vistaLogin.classList.add('hidden');
         vistaDashboard.classList.remove('hidden');
         cargarMenuDinamico();
+        // ESTA LÍNEA CARGA EL INICIO AUTOMÁTICAMENTE
+        cargarModulo('/inicio', 'Inicio');
     }
 
     // ================= MENU DINÁMICO =================
@@ -174,9 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
             menuContainer.appendChild(li);
         });
     }
-
-    
-
 
     // ================= SESIONES =================
     async function cargarSesiones() {
@@ -260,9 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-      
-
     // ================= VERIFICAR SESIÓN =================
     async function verificarEstadoSesion() {
         try {
@@ -342,9 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-
-
     async function cargarModulo(endpoint, nombre) {
 
         tituloSeccion.textContent = nombre;
@@ -358,17 +351,57 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarPanelBloques();
             return;
         }
+        
+        if (endpoint === '/inicio') {
+            contenedorPrincipal.innerHTML = `
+                <div class="card p-5 shadow-sm border-0 bg-light">
+                    <h2 class="text-primary">Bienvenido a CicloApp</h2>
+                    <p class="lead">Tu plataforma personalizada para la gestión de entrenamientos ciclistas.</p>
+                    <hr>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>📊 Gestión de Bloques</h5>
+                            <p>Organiza tus sesiones por tipos y duraciones.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>👤 Tu Perfil</h5>
+                            <p>Mantén actualizados tus datos de peso y altura.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
 
         if (endpoint === '/profile') {
-            contenedorPrincipal.innerHTML =
-                '<div class="alert alert-warning">Perfil en construcción</div>';
+            contenedorPrincipal.innerHTML = '<p>Cargando datos...</p>';
+            try {
+                const res = await fetch('/api/user', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                const u = await res.json();
+                
+                contenedorPrincipal.innerHTML = `
+                    <div class="card p-4 shadow-sm">
+                        <h5 class="text-primary mb-3">Datos de mi Perfil</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Nombre:</strong> ${u.nombre} ${u.apellidos}</li>
+                            <li class="list-group-item"><strong>Email:</strong> ${u.email}</li>
+                            <li class="list-group-item"><strong>Nacimiento:</strong> ${u.fecha_nacimiento || '--'}</li>
+                            <li class="list-group-item"><strong>Peso:</strong> ${u.peso_base ? u.peso_base + ' kg' : '--'}</li>
+                            <li class="list-group-item"><strong>Altura:</strong> ${u.altura_base ? u.altura_base + ' cm' : '--'}</li>
+                        </ul>
+                    </div>
+                `;
+            } catch (err) {
+                contenedorPrincipal.innerHTML = '<div class="alert alert-danger">No se pudo cargar el perfil.</div>';
+            }
             return;
         }
 
         contenedorPrincipal.innerHTML =
             `<div class="alert alert-info">Bienvenido a la sección ${nombre}</div>`;
     }
-
 
     window.eliminarBloque = async function (id) {
 
@@ -391,7 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     function mostrarPanelBloques() {
 
         contenedorPrincipal.innerHTML = `
@@ -402,8 +434,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="d-flex gap-2 flex-wrap">
 
                     <button class="btn btn-primary w-100 mb-2" onclick="cargarBloques()">
-                    Ver bloques
-                </button>
+                        Ver bloques
+                    </button>
 
 
                     <button class="btn btn-success"
@@ -416,10 +448,4 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
     }
-
-
-
-
-
-
 });

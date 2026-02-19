@@ -22,7 +22,7 @@ Route::post('/login', [AuthController::class, 'login']);
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     // Ruta para obtener los datos del usuario logueado (útil para el perfil)
     Route::get('/user', function (Request $request) {
         return $request->user();

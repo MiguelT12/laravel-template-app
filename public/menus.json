@@ -1,40 +1,31 @@
 {
   "opciones": [
     {
-      "nombre": "Inicio",
-      "endpoint": "/home"
-    },
-    {
       "nombre": "Perfil",
       "endpoint": "/profile"
     },
     {
-      "nombre": "Entrenamientos",
+      "nombre": "Estadísticas",
       "submenu": [
-        {
-          "nombre": "Sesiones",
-          "endpoint": "/sesiones-web"
-        },
         {
           "nombre": "Bloques",
           "endpoint": "/bloques"
         },
         {
-          "nombre": "Estadisticas",
-          "endpoint": "/estadisticas"
-        }
-      ]
-    },
-    {
-      "nombre": "Ayuda",
-      "submenu": [
-        {
-          "nombre": "Contacto",
-          "endpoint": "/contacto"
+          "nombre": "Sesión de bloques",
+          "endpoint": "/sesiones-web"
         },
         {
-          "nombre": "FAQ",
-          "endpoint": "/faq"
+          "nombre": "Sesión de entrenamientos",
+          "endpoint": "/sesiones-ent"
+        },
+        {
+          "nombre": "Plan de entrenamientos",
+          "endpoint": "/planes-ent"
+        },
+        {
+          "nombre": "Resultados de entrenamiento",
+          "endpoint": "/resultados-ent"
         }
       ]
     }

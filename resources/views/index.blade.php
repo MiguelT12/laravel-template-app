@@ -5,32 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Gestión Ciclista</title>
+    <title>PROYECTO DAW</title>
 
     <!-- TU CSS -->
     <link href="{{ asset('css/index.css') }}" rel="stylesheet">
 
-    <!-- BOOTSTRAP (NECESARIO para botones, cards, layout, etc) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function mostrarRegistro() {
+            document.getElementById("registroForm").style.display = "block";
+        }
+    </script>
 </head>
 <body>
-
-<!-- =====================================================
-====================== LOGIN =============================
-====================================================== -->
-
 <div id="vista-login" class="login-wrapper">
     <div class="card-login">
 
         <h3 class="text-center">Iniciar Sesión</h3>
 
         <!-- LOGIN -->
-        <form id="form-login">
+        <form id="main-login-form">
             @csrf
 
             <div class="form-group mb-2">
                 <label>Email</label>
-                <input type="email" id="email" class="form-control" placeholder="migue@test.com" required>
+                <input type="email" id="email" class="form-control" placeholder="email@test.com" required>
             </div>
 
             <div class="form-group mb-3">
@@ -42,15 +41,9 @@
             <p id="mensaje-error" class="text-danger mt-2 text-center"></p>
         </form>
 
-        <!-- LINK REGISTRO -->
-        <p style="text-align:center; margin-top:15px;">
-            ¿No tienes cuenta?
+       <p style="text-align:center; margin-top:15px;">
             <a href="#" onclick="mostrarRegistro()">Regístrate</a>
         </p>
-
-        <!-- =====================================================
-        ================== FORM REGISTRO ========================
-        ====================================================== -->
 
         <div id="registroForm" style="display:none; margin-top:20px;">
 
@@ -82,15 +75,11 @@
 </div>
 
 
-<!-- =====================================================
-===================== DASHBOARD ==========================
-====================================================== -->
-
 <div id="vista-dashboard" class="hidden">
 
     <nav class="navbar navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
-            <span class="navbar-brand">CicloApp</span>
+            <span class="navbar-brand">PROYECTO DAW</span>
 
             <ul id="dynamic-menu-container" class="nav"></ul>
 
@@ -115,20 +104,8 @@
 </div>
 
 
-<!-- =====================================================
-======================== SCRIPTS =========================
-====================================================== -->
+<script src="{{ asset('js/app.js') }}?t={{ time() }}"></script>
 
-<script src="{{ asset('js/app.js') }}"></script>
-
-<!-- BOOTSTRAP JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-function mostrarRegistro() {
-    document.getElementById("registroForm").style.display = "block";
-}
-</script>
-
 </body>
 </html>
