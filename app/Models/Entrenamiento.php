@@ -10,7 +10,7 @@ class Entrenamiento extends Model
     protected $table = 'entrenamiento'; 
     public $timestamps = false;
 
-    [cite_start]// Todos los campos del diagrama [cite: 16-25]
+    // Todos los campos del diagrama
     protected $fillable = [
         'id_ciclista', 
         'id_bicicleta', 

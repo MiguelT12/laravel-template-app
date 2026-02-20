@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     verificarEstadoSesion();
 
     // ================= LOGIN =================
-    const formLogin = document.getElementById('form-login');
+    const formLogin = document.getElementById('main-login-form');
 
     if (formLogin) {
         formLogin.addEventListener('submit', async (e) => {

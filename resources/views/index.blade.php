@@ -42,7 +42,7 @@
         </form>
 
        <p style="text-align:center; margin-top:15px;">
-            <a href="#" onclick="mostrarRegistro()">Regístrate</a>
+            <button type="button" onclick="mostrarRegistro()">Regístrate</button>
         </p>
 
         <div id="registroForm" style="display:none; margin-top:20px;">
