@@ -115,3 +115,8 @@ Route::middleware('auth')->group(function () {
     });
 
 });
+
+// PARA PASAR LOS DATOS DEL USUARIO Y SE MUESTREN EN PANTALLA
+Route::middleware('auth')->get('/datos-perfil', function (\Illuminate\Http\Request $request) {
+    return response()->json($request->user());
+});

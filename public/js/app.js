@@ -410,17 +410,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (endpoint === '/profile') {
             contenedorPrincipal.innerHTML = '<p>Cargando datos...</p>';
             try {
-                const res = await fetch('/api/user', {
+                // Ahora apuntamos a la ruta web, no a la API
+                const res = await fetch('/datos-perfil', {
                     headers: { 'Accept': 'application/json' }
                 });
+                
+                if (!res.ok) throw new Error();
+                
                 const u = await res.json();
                 
                 contenedorPrincipal.innerHTML = `
                     <div class="card p-4 shadow-sm">
                         <h5 class="text-primary mb-3">Datos de mi Perfil</h5>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Nombre:</strong> ${u.nombre} ${u.apellidos}</li>
-                            <li class="list-group-item"><strong>Email:</strong> ${u.email}</li>
+                            <li class="list-group-item"><strong>Nombre:</strong> ${u.nombre || u.name || ''} ${u.apellidos || ''}</li>
+                            <li class="list-group-item"><strong>Email:</strong> ${u.email || '--'}</li>
                             <li class="list-group-item"><strong>Nacimiento:</strong> ${u.fecha_nacimiento || '--'}</li>
                             <li class="list-group-item"><strong>Peso:</strong> ${u.peso_base ? u.peso_base + ' kg' : '--'}</li>
                             <li class="list-group-item"><strong>Altura:</strong> ${u.altura_base ? u.altura_base + ' cm' : '--'}</li>
@@ -428,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
             } catch (err) {
-                contenedorPrincipal.innerHTML = '<div class="alert alert-danger">No se pudo cargar el perfil.</div>';
+                contenedorPrincipal.innerHTML = '<div class="alert alert-danger p-3">Error cargando los datos. Cierra sesión y vuelve a entrar.</div>';
             }
             return;
         }
