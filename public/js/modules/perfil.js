@@ -1,5 +1,10 @@
 export async function cargarPerfil(contenedor) {
-    contenedor.innerHTML = '<p>Cargando datos...</p>';
+    // Limpiamos el contenedor y creamos el texto de carga con DOM
+    contenedor.innerHTML = '';
+    const textoCarga = document.createElement('p');
+    textoCarga.textContent = 'Cargando datos...';
+    contenedor.appendChild(textoCarga);
+
     try {
         const res = await fetch('/datos-perfil', {
             headers: { 'Accept': 'application/json' }
@@ -7,36 +12,126 @@ export async function cargarPerfil(contenedor) {
         if (!res.ok) throw new Error();
         const u = await res.json();
         
-        contenedor.innerHTML = `
-            <div id="vista-datos-perfil" class="card p-4 shadow-sm">
-                <h5 class="text-primary mb-3">Datos de mi Perfil</h5>
-                <ul class="list-group list-group-flush mb-3">
-                    <li class="list-group-item"><strong>Nombre:</strong> ${u.nombre || u.name || ''} ${u.apellidos || ''}</li>
-                    <li class="list-group-item"><strong>Email:</strong> ${u.email || '--'}</li>
-                    <li class="list-group-item"><strong>Nacimiento:</strong> ${u.fecha_nacimiento || '--'}</li>
-                    <li class="list-group-item"><strong>Peso:</strong> ${u.peso_base ? u.peso_base + ' kg' : '--'}</li>
-                    <li class="list-group-item"><strong>Altura:</strong> ${u.altura_base ? u.altura_base + ' cm' : '--'}</li>
-                </ul>
-                <button class="btn btn-primary" onclick="mostrarFormPerfil()">Modificar datos</button>
-            </div>
+        contenedor.innerHTML = '';
+        const vistaDatos = document.createElement('div');
+        vistaDatos.id = 'vista-datos-perfil';
+        vistaDatos.className = 'card p-4 shadow-sm';
 
-            <div id="form-editar-perfil" class="card p-4 shadow-sm d-none">
-                <h5 class="text-primary mb-3">Editar Perfil</h5>
-                
-                <input type="text" id="edit-nombre" class="form-control mb-2" placeholder="Nombre" value="${u.nombre || u.name || ''}">
-                <input type="text" id="edit-apellidos" class="form-control mb-2" placeholder="Apellidos" value="${u.apellidos || ''}">
-                <input type="date" id="edit-nacimiento" class="form-control mb-2" value="${u.fecha_nacimiento || ''}">
-                <input type="number" step="0.01" id="edit-peso" class="form-control mb-2" placeholder="Peso (kg)" value="${u.peso_base || ''}">
-                <input type="number" id="edit-altura" class="form-control mb-2" placeholder="Altura (cm)" value="${u.altura_base || ''}">
-                
-                <div class="mt-3">
-                    <button class="btn btn-success" onclick="guardarPerfil()">Guardar cambios</button>
-                    <button class="btn btn-secondary" onclick="ocultarFormPerfil()">Cancelar</button>
-                </div>
-            </div>
-        `;
+        const tituloVista = document.createElement('h5');
+        tituloVista.className = 'text-primary mb-3';
+        tituloVista.textContent = 'Datos de mi Perfil';
+        vistaDatos.appendChild(tituloVista);
+
+        const lista = document.createElement('ul');
+        lista.className = 'list-group list-group-flush mb-3';
+
+        // Función auxiliar para crear los elementos <li>
+        const crearItemLista = (etiqueta, valor) => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
+            
+            const strong = document.createElement('strong');
+            strong.textContent = etiqueta + ': ';
+            
+            li.appendChild(strong);
+            li.appendChild(document.createTextNode(valor));
+            return li;
+        };
+
+        const nombreCompleto = `${u.nombre || u.name || ''} ${u.apellidos || ''}`.trim();
+        lista.appendChild(crearItemLista('Nombre', nombreCompleto));
+        lista.appendChild(crearItemLista('Email', u.email || '--'));
+        lista.appendChild(crearItemLista('Nacimiento', u.fecha_nacimiento || '--'));
+        lista.appendChild(crearItemLista('Peso', u.peso_base ? u.peso_base + ' kg' : '--'));
+        lista.appendChild(crearItemLista('Altura', u.altura_base ? u.altura_base + ' cm' : '--'));
+        
+        vistaDatos.appendChild(lista);
+
+        const btnModificar = document.createElement('button');
+        btnModificar.className = 'btn btn-primary';
+        btnModificar.textContent = 'Modificar datos';
+        btnModificar.onclick = () => window.mostrarFormPerfil();
+        vistaDatos.appendChild(btnModificar);
+
+        // Formulario
+        const formEditar = document.createElement('div');
+        formEditar.id = 'form-editar-perfil';
+        formEditar.className = 'card p-4 shadow-sm d-none';
+
+        const tituloForm = document.createElement('h5');
+        tituloForm.className = 'text-primary mb-3';
+        tituloForm.textContent = 'Editar Perfil';
+        formEditar.appendChild(tituloForm);
+
+        const inputNombre = document.createElement('input');
+        inputNombre.type = 'text';
+        inputNombre.id = 'edit-nombre';
+        inputNombre.className = 'form-control mb-2';
+        inputNombre.placeholder = 'Nombre';
+        inputNombre.value = u.nombre || u.name || '';
+        formEditar.appendChild(inputNombre);
+
+        const inputApellidos = document.createElement('input');
+        inputApellidos.type = 'text';
+        inputApellidos.id = 'edit-apellidos';
+        inputApellidos.className = 'form-control mb-2';
+        inputApellidos.placeholder = 'Apellidos';
+        inputApellidos.value = u.apellidos || '';
+        formEditar.appendChild(inputApellidos);
+
+        const inputNacimiento = document.createElement('input');
+        inputNacimiento.type = 'date';
+        inputNacimiento.id = 'edit-nacimiento';
+        inputNacimiento.className = 'form-control mb-2';
+        inputNacimiento.value = u.fecha_nacimiento || '';
+        formEditar.appendChild(inputNacimiento);
+
+        const inputPeso = document.createElement('input');
+        inputPeso.type = 'number';
+        inputPeso.step = '0.01';
+        inputPeso.id = 'edit-peso';
+        inputPeso.className = 'form-control mb-2';
+        inputPeso.placeholder = 'Peso (kg)';
+        inputPeso.value = u.peso_base || '';
+        formEditar.appendChild(inputPeso);
+
+        const inputAltura = document.createElement('input');
+        inputAltura.type = 'number';
+        inputAltura.id = 'edit-altura';
+        inputAltura.className = 'form-control mb-2';
+        inputAltura.placeholder = 'Altura (cm)';
+        inputAltura.value = u.altura_base || '';
+        formEditar.appendChild(inputAltura);
+
+        const divBotones = document.createElement('div');
+        divBotones.className = 'mt-3';
+
+        const btnGuardar = document.createElement('button');
+        btnGuardar.className = 'btn btn-success';
+        btnGuardar.textContent = 'Guardar cambios';
+        btnGuardar.onclick = () => window.guardarPerfil();
+        divBotones.appendChild(btnGuardar);
+
+        divBotones.appendChild(document.createTextNode(' '));
+
+        const btnCancelar = document.createElement('button');
+        btnCancelar.className = 'btn btn-secondary';
+        btnCancelar.textContent = 'Cancelar';
+        btnCancelar.onclick = () => window.ocultarFormPerfil();
+        divBotones.appendChild(btnCancelar);
+
+        formEditar.appendChild(divBotones);
+
+        // Añadimos las dos estructuras principales al contenedor
+        contenedor.appendChild(vistaDatos);
+        contenedor.appendChild(formEditar);
+
     } catch {
-        contenedor.innerHTML = '<div class="alert alert-danger">Error cargando perfil</div>';
+        contenedor.innerHTML = '';
+        const divError = document.createElement('div');
+        divError.className = 'alert alert-danger';
+        divError.textContent = 'Error cargando perfil';
+        contenedor.appendChild(divError);
     }
 }
 
@@ -71,7 +166,7 @@ export async function guardarPerfil(csrfToken, reloadCb) {
         if (!res.ok) throw new Error();
 
         alert("Perfil actualizado correctamente");
-        reloadCb(); // Recarga la vista para mostrar los datos nuevos
+        reloadCb(); 
     } catch (error) {
         console.error(error);
         alert("Error al actualizar el perfil");
