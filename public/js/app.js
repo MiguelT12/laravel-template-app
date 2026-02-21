@@ -3,8 +3,7 @@ import { cargarPerfil, mostrarFormPerfil, ocultarFormPerfil, guardarPerfil } fro
 import { mostrarPanelBloques, cargarBloques, mostrarFormBloque, crearBloque, eliminarBloque } from './modules/bloques.js';
 import { mostrarPanelSesiones, cargarSesiones, mostrarFormSesion, crearSesion, eliminarSesion, verBloquesSesion, mostrarFormAgregarBloqueSesion, agregarBloqueSesion, eliminarBloqueSesion } from './modules/sesiones.js';
 import { mostrarCalendarioSesiones } from './modules/calendario.js';
-import { mostrarPanelEntrenamientos, cargarEntrenamientos, verEntrenamiento } from './modules/entrenamientos.js';
-
+import { mostrarPanelEntrenamientos,cargarEntrenamientos,verEntrenamiento,mostrarFormEntrenamiento,guardarEntrenamiento} from './modules/entrenamientos.js';
 
     // --- REFERENCIAS DOM ---
     const vistaLogin = document.getElementById('vista-login');
@@ -192,3 +191,7 @@ import { mostrarPanelEntrenamientos, cargarEntrenamientos, verEntrenamiento } fr
     window.mostrarFormPerfil = () => mostrarFormPerfil();
     window.ocultarFormPerfil = () => ocultarFormPerfil();
     window.guardarPerfil = () => guardarPerfil(csrfToken, () => cargarPerfil(contenedorPrincipal));
+
+    window.mostrarFormEntrenamiento = () => mostrarFormEntrenamiento(contenedorPrincipal);
+
+    window.guardarEntrenamiento = () => guardarEntrenamiento(csrfToken, window.cargarEntrenamientos);

@@ -59,3 +59,72 @@ export async function verEntrenamiento(id, contenedor) {
         </div>
     `;
 }
+export function mostrarFormEntrenamiento(contenedor) {
+
+    contenedor.innerHTML = `
+        <div class="card p-4 shadow-sm">
+            <h4>Registrar entrenamiento</h4>
+
+            <label>Fecha</label>
+            <input id="entFecha" type="datetime-local" class="form-control mb-2">
+
+            <label>Duración (hh:mm:ss)</label>
+            <input id="entDuracion" class="form-control mb-2" placeholder="01:30:00">
+
+            <label>Kilómetros</label>
+            <input id="entKm" type="number" step="0.01" class="form-control mb-2">
+
+            <label>Pulso medio</label>
+            <input id="entPulsoMedio" type="number" class="form-control mb-2">
+
+            <label>Potencia media</label>
+            <input id="entPotenciaMedia" type="number" class="form-control mb-2">
+
+            <label>Comentario</label>
+            <textarea id="entComentario" class="form-control mb-3"></textarea>
+
+            <button class="btn btn-success" onclick="guardarEntrenamiento()">
+                Guardar
+            </button>
+
+            <button class="btn btn-secondary" onclick="cargarEntrenamientos()">
+                Cancelar
+            </button>
+        </div>
+    `;
+}
+
+
+export async function guardarEntrenamiento(csrfToken, reloadCb) {
+
+    const data = {
+        fecha: document.getElementById('entFecha').value,
+        duracion: document.getElementById('entDuracion').value,
+        kilometros: document.getElementById('entKm').value,
+        pulso_medio: document.getElementById('entPulsoMedio').value,
+        potencia_media: document.getElementById('entPotenciaMedia').value,
+        comentario: document.getElementById('entComentario').value
+    };
+
+    try {
+
+        const res = await fetch('/entrenamientos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error();
+
+        alert("Entrenamiento registrado");
+
+        reloadCb();
+
+    } catch (e) {
+        console.error(e);
+        alert("Error guardando entrenamiento");
+    }
+}
