@@ -9,6 +9,7 @@ use App\Http\Controllers\BloqueController;
 use App\Http\Controllers\SesionEntrenamientoController;
 use App\Http\Controllers\SesionBloqueController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\EntrenamientoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +114,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('{sesionId}/bloques/{bloqueId}', [SesionBloqueController::class, 'destroy']);
 
     });
+
+
+    Route::get('/entrenamientos', [EntrenamientoController::class, 'index']);
+    Route::post('/entrenamientos', [EntrenamientoController::class, 'store']);
+    Route::get('/entrenamientos/{id}', [EntrenamientoController::class, 'show']);
+    Route::delete('/entrenamientos/{id}', [EntrenamientoController::class, 'destroy']);
+
+
+
 
 });
 

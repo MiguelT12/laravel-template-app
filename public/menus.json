@@ -24,8 +24,8 @@
           "endpoint": "/planes-ent"
         },
         {
-          "nombre": "Resultados de entrenamiento",
-          "endpoint": "/resultados-ent"
+          "nombre": "Entrenamientos realizados",
+          "endpoint": "/entrenamientos"
         }
       ]
     }

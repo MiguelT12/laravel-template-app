@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\BloqueEntrenamiento;
 
 class SesionEntrenamiento extends Model
 {
@@ -17,7 +16,7 @@ class SesionEntrenamiento extends Model
         'completada'
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function bloques()
     {
@@ -28,10 +27,7 @@ class SesionEntrenamiento extends Model
             'id_bloque_entrenamiento'
         )->withPivot([
             'orden',
-            'repeticiones',
-            'duracion_real',
-            'potencia_real',
-            'pulso_real'
+            'repeticiones'
         ]);
     }
 }
