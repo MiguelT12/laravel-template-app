@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\SesionController;
 use App\Http\Controllers\BloqueController;
 use App\Http\Controllers\SesionEntrenamientoController;
 use App\Http\Controllers\SesionBloqueController;
@@ -39,8 +38,6 @@ Route::get('/check-auth', function () {
 
 // Rutas que requieren un login
 Route::middleware('auth')->group(function () {
-    Route::get('/sesiones-web', [SesionController::class, 'index']);
-
     // Sesiones entrenamiento
     Route::get('/sesiones', [SesionEntrenamientoController::class, 'index']);
     Route::post('/sesiones', [SesionEntrenamientoController::class, 'store']);

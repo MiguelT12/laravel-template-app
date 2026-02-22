@@ -25,7 +25,7 @@ export async function cargarPerfil(contenedor) {
         const lista = document.createElement('ul');
         lista.className = 'list-group list-group-flush mb-3';
 
-        // Función auxiliar para crear los elementos <li>
+        // Función para crear los elementos <li>
         const crearItemLista = (etiqueta, valor) => {
             const li = document.createElement('li');
             li.className = 'list-group-item';
@@ -122,7 +122,6 @@ export async function cargarPerfil(contenedor) {
 
         formEditar.appendChild(divBotones);
 
-        // Añadimos las dos estructuras principales al contenedor
         contenedor.appendChild(vistaDatos);
         contenedor.appendChild(formEditar);
 

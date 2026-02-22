@@ -13,9 +13,7 @@ class RegisterController extends Controller
 {
     public function register(Request $request)
     {
-        // ==============================
         // VALIDACIÓN
-        // ==============================
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|max:80',
             'apellidos' => 'required|string|max:80',
@@ -30,9 +28,7 @@ class RegisterController extends Controller
                 ->withInput();
         }
 
-        // ==============================
         // CREAR CICLISTA
-        // ==============================
         $ciclista = Ciclista::create([
             'nombre' => $request->nombre,
             'apellidos' => $request->apellidos,
@@ -43,13 +39,9 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
-    
-
         Auth::login($ciclista);
 
-        // ==============================
         // REDIRECCIÓN
-        // ==============================
         return redirect('/')
             ->with('success', 'Cuenta creada correctamente');
     }

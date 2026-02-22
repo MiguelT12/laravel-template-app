@@ -1,17 +1,17 @@
 export async function mostrarCalendarioSesiones(contenedor, csrfToken, clickSesionCb, reloadCalendarioCb) {
     contenedor.innerHTML = '';
-    const card = document.createElement('div');
-    card.className = 'card p-4 shadow-sm';
+    const tarjeta = document.createElement('div');
+    tarjeta.className = 'tarjeta p-4 shadow-sm';
 
     const h4 = document.createElement('h4');
     h4.textContent = 'Calendario de sesiones';
-    card.appendChild(h4);
+    tarjeta.appendChild(h4);
 
     const divCalendario = document.createElement('div');
     divCalendario.id = 'calendario';
-    card.appendChild(divCalendario);
+    tarjeta.appendChild(divCalendario);
 
-    contenedor.appendChild(card);
+    contenedor.appendChild(tarjeta);
 
     try {
         const res = await fetch('/sesiones', { 

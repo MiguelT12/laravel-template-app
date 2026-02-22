@@ -7,9 +7,7 @@ use App\Models\Entrenamiento;
 
 class EntrenamientoController extends Controller
 {
-    /*
-    | LISTAR ENTRENAMIENTOS
-    */
+    // Listar
     public function index()
     {
         return response()->json(
@@ -19,9 +17,7 @@ class EntrenamientoController extends Controller
         );
     }
 
-    /*
-    | VER DETALLE
-    */
+    // Ver detalle
     public function show($id)
     {
         return response()->json(
@@ -30,6 +26,7 @@ class EntrenamientoController extends Controller
         );
     }
 
+    // Guardar
     public function store(Request $request)
     {
         $request->validate([
@@ -47,12 +44,10 @@ class EntrenamientoController extends Controller
             'duracion' => $request->duracion,
             'kilometros' => $request->kilometros,
 
-            // CAMPOS OBLIGATORIOS QUE FALTABAN
             'recorrido' => $request->recorrido ?? 'Sin definir',
             'potencia_normalizada' => $request->potencia_normalizada ?? 0,
             'velocidad_media' => $request->velocidad_media ?? 0,
 
-            // OPCIONALES
             'pulso_medio' => $request->pulso_medio,
             'pulso_max' => $request->pulso_max,
             'potencia_media' => $request->potencia_media,

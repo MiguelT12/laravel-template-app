@@ -8,11 +8,7 @@ use App\Models\BloqueEntrenamiento;
 
 class SesionBloqueController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | LISTAR BLOQUES DE UNA SESION
-    |--------------------------------------------------------------------------
-    */
+    // Listar bloques por id
     public function index($sesionId)
     {
         $sesion = SesionEntrenamiento::with('bloques')
@@ -21,11 +17,7 @@ class SesionBloqueController extends Controller
         return response()->json($sesion->bloques);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | AÑADIR BLOQUE A SESION (TABLA PIVOT)
-    |--------------------------------------------------------------------------
-    */
+    // Añadir bloque a sesión
     public function store(Request $request, $sesionId)
     {
         $request->validate([
@@ -50,11 +42,7 @@ class SesionBloqueController extends Controller
         ]);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | ACTUALIZAR DATOS DEL PIVOT (orden, repeticiones...)
-    |--------------------------------------------------------------------------
-    */
+    // Actualizar datos
     public function update(Request $request, $sesionId, $bloqueId)
     {
         $request->validate([
@@ -78,11 +66,7 @@ class SesionBloqueController extends Controller
         ]);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | ELIMINAR BLOQUE DE UNA SESION
-    |--------------------------------------------------------------------------
-    */
+    // Eliminar
     public function destroy($sesionId, $bloqueId)
     {
         $sesion = SesionEntrenamiento::findOrFail($sesionId);

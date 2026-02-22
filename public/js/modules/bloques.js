@@ -1,31 +1,31 @@
 export function mostrarPanelBloques(contenedor) {
     contenedor.innerHTML = '';
 
-    const card = document.createElement('div');
-    card.className = 'card p-4 shadow-sm';
+    const tarjeta = document.createElement('div');
+    tarjeta.className = 'tarjeta p-4 shadow-sm';
 
     const h4 = document.createElement('h4');
     h4.className = 'mb-3';
     h4.textContent = 'Gestión de bloques';
-    card.appendChild(h4);
+    tarjeta.appendChild(h4);
 
     const divBotones = document.createElement('div');
     divBotones.className = 'd-flex gap-2 flex-wrap';
 
-    const btnVer = document.createElement('button');
-    btnVer.className = 'btn btn-primary w-100 mb-2';
-    btnVer.textContent = 'Ver bloques';
-    btnVer.onclick = () => window.cargarBloques();
-    divBotones.appendChild(btnVer);
+    const botonVer = document.createElement('button');
+    botonVer.className = 'btn btn-primary w-100 mb-2';
+    botonVer.textContent = 'Ver bloques';
+    botonVer.onclick = () => window.cargarBloques();
+    divBotones.appendChild(botonVer);
 
-    const btnCrear = document.createElement('button');
-    btnCrear.className = 'btn btn-success';
-    btnCrear.textContent = 'Crear bloque';
-    btnCrear.onclick = () => window.mostrarFormBloque();
-    divBotones.appendChild(btnCrear);
+    const botonCrear = document.createElement('button');
+    botonCrear.className = 'btn btn-success';
+    botonCrear.textContent = 'Crear bloque';
+    botonCrear.onclick = () => window.mostrarFormBloque();
+    divBotones.appendChild(botonCrear);
 
-    card.appendChild(divBotones);
-    contenedor.appendChild(card);
+    tarjeta.appendChild(divBotones);
+    contenedor.appendChild(tarjeta);
 }
 
 export async function cargarBloques(contenedor) {
@@ -44,8 +44,8 @@ export async function cargarBloques(contenedor) {
             return;
         }
 
-        const table = document.createElement('table');
-        table.className = 'table table-striped';
+        const tabla = document.createElement('tabla');
+        tabla.className = 'tabla tabla-striped';
 
         const thead = document.createElement('thead');
         const trHead = document.createElement('tr');
@@ -58,7 +58,7 @@ export async function cargarBloques(contenedor) {
         });
         
         thead.appendChild(trHead);
-        table.appendChild(thead);
+        tabla.appendChild(thead);
 
         const tbody = document.createElement('tbody');
 
@@ -92,8 +92,8 @@ export async function cargarBloques(contenedor) {
             tbody.appendChild(tr);
         });
 
-        table.appendChild(tbody);
-        contenedor.appendChild(table);
+        tabla.appendChild(tbody);
+        contenedor.appendChild(tabla);
 
     } catch (error) {
         console.error(error);
@@ -108,48 +108,48 @@ export async function cargarBloques(contenedor) {
 export function mostrarFormBloque(contenedor) {
     contenedor.innerHTML = '';
 
-    const card = document.createElement('div');
-    card.className = 'card p-4';
+    const tarjeta = document.createElement('div');
+    tarjeta.className = 'tarjeta p-4';
 
     const h4 = document.createElement('h4');
     h4.textContent = 'Nuevo bloque';
-    card.appendChild(h4);
+    tarjeta.appendChild(h4);
 
     const inputNombre = document.createElement('input');
     inputNombre.id = 'bloqueNombre';
     inputNombre.className = 'form-control mb-2';
     inputNombre.placeholder = 'Nombre';
-    card.appendChild(inputNombre);
+    tarjeta.appendChild(inputNombre);
 
     const inputTipo = document.createElement('input');
     inputTipo.id = 'bloqueTipo';
     inputTipo.className = 'form-control mb-2';
     inputTipo.placeholder = 'Tipo';
-    card.appendChild(inputTipo);
+    tarjeta.appendChild(inputTipo);
 
     const inputDuracion = document.createElement('input');
     inputDuracion.id = 'bloqueDuracion';
     inputDuracion.className = 'form-control mb-2';
     inputDuracion.type = 'number';
     inputDuracion.placeholder = 'Duración minutos';
-    card.appendChild(inputDuracion);
+    tarjeta.appendChild(inputDuracion);
 
     const btnGuardar = document.createElement('button');
     btnGuardar.className = 'btn btn-success';
     btnGuardar.textContent = 'Guardar';
     btnGuardar.onclick = () => window.crearBloque();
-    card.appendChild(btnGuardar);
+    tarjeta.appendChild(btnGuardar);
 
     // Espacio entre botones
-    card.appendChild(document.createTextNode(' '));
+    tarjeta.appendChild(document.createTextNode(' '));
 
     const btnCancelar = document.createElement('button');
     btnCancelar.className = 'btn btn-secondary';
     btnCancelar.textContent = 'Cancelar';
     btnCancelar.onclick = () => window.cargarBloques();
-    card.appendChild(btnCancelar);
+    tarjeta.appendChild(btnCancelar);
 
-    contenedor.appendChild(card);
+    contenedor.appendChild(tarjeta);
 }
 
 export async function crearBloque(csrfToken, reloadCb) {

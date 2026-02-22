@@ -1,151 +1,221 @@
 export function mostrarPanelPlanes(contenedor) {
+    contenedor.innerHTML = '';
 
-    contenedor.innerHTML = `
-        <div class="card p-4 shadow-sm">
-            <h4>Planes de entrenamiento</h4>
+    const tarjeta = document.createElement('div');
+    tarjeta.className = 'card p-4 shadow-sm';
 
-            <button class="btn btn-primary mb-2"
-                onclick="window.cargarPlanes()">
-                Ver planes
-            </button>
+    const titulo = document.createElement('h4');
+    titulo.textContent = 'Planes de entrenamiento';
+    tarjeta.appendChild(titulo);
 
-            <button class="btn btn-success"
-                onclick="window.mostrarFormPlan()">
-                Crear plan
-            </button>
-        </div>
-    `;
+    const btnVer = document.createElement('button');
+    btnVer.className = 'btn btn-primary mb-2';
+    btnVer.textContent = 'Ver planes';
+    btnVer.onclick = () => window.cargarPlanes();
+    tarjeta.appendChild(btnVer);
+
+    tarjeta.appendChild(document.createTextNode(' '));
+
+    const btnCrear = document.createElement('button');
+    btnCrear.className = 'btn btn-success';
+    btnCrear.textContent = 'Crear plan';
+    btnCrear.onclick = () => window.mostrarFormPlan();
+    tarjeta.appendChild(btnCrear);
+
+    contenedor.appendChild(tarjeta);
 }
 
 export async function cargarPlanes(contenedor) {
-
-    contenedor.innerHTML = 'Cargando...';
-
     try {
-        const res = await fetch('/planes-ent',{headers:{Accept:'application/json'}});
+        const res = await fetch('/planes-ent', { headers: { Accept: 'application/json' } });
         const planes = await res.json();
 
-        if(planes.length===0){
-            contenedor.innerHTML='<div class="alert alert-info">No hay planes</div>';
+        contenedor.innerHTML = '';
+
+        if (planes.length === 0) {
+            const alertaInfo = document.createElement('div');
+            alertaInfo.className = 'alert alert-info';
+            alertaInfo.textContent = 'No hay planes';
+            contenedor.appendChild(alertaInfo);
             return;
         }
 
-        let html = `
-        <table class="table">
-        <tr>
-            <th>Nombre</th>
-            <th>Inicio</th>
-            <th>Fin</th>
-            <th></th>
-        </tr>`;
+        const tabla = document.createElement('table');
+        tabla.className = 'table';
 
-        planes.forEach(p=>{
-            html+=`
-            <tr>
-                <td>${p.nombre}</td>
-                <td>${p.fecha_inicio}</td>
-                <td>${p.fecha_fin??'-'}</td>
-                <td>
-                    <button class="btn btn-sm btn-info"
-                        onclick="window.verPlan(${p.id})">
-                        Ver
-                    </button>
+        const filaCabecera = document.createElement('tr');
+        const titulos = ['Nombre', 'Inicio', 'Fin', ''];
+        titulos.forEach(texto => {
+            const th = document.createElement('th');
+            th.textContent = texto;
+            filaCabecera.appendChild(th);
+        });
+        tabla.appendChild(filaCabecera);
 
-                    <button class="btn btn-sm btn-danger"
-                        onclick="window.eliminarPlan(${p.id})">
-                        Eliminar
-                    </button>
-                </td>
-            </tr>`;
+        planes.forEach(p => {
+            const fila = document.createElement('tr');
+
+            const celdaNombre = document.createElement('td');
+            celdaNombre.textContent = p.nombre;
+            fila.appendChild(celdaNombre);
+
+            const celdaInicio = document.createElement('td');
+            celdaInicio.textContent = p.fecha_inicio;
+            fila.appendChild(celdaInicio);
+
+            const celdaFin = document.createElement('td');
+            celdaFin.textContent = p.fecha_fin ?? '-';
+            fila.appendChild(celdaFin);
+
+            const celdaAcciones = document.createElement('td');
+
+            const btnVer = document.createElement('button');
+            btnVer.className = 'btn btn-sm btn-info';
+            btnVer.textContent = 'Ver';
+            btnVer.onclick = () => window.verPlan(p.id);
+            celdaAcciones.appendChild(btnVer);
+
+            celdaAcciones.appendChild(document.createTextNode(' '));
+
+            const btnEliminar = document.createElement('button');
+            btnEliminar.className = 'btn btn-sm btn-danger';
+            btnEliminar.textContent = 'Eliminar';
+            btnEliminar.onclick = () => window.eliminarPlan(p.id);
+            celdaAcciones.appendChild(btnEliminar);
+
+            fila.appendChild(celdaAcciones);
+            tabla.appendChild(fila);
         });
 
-        html+='</table>';
-        contenedor.innerHTML=html;
+        contenedor.appendChild(tabla);
 
-    }catch{
-        contenedor.innerHTML='<div class="alert alert-danger">Error cargando planes</div>';
+    } catch {
+        contenedor.innerHTML = '';
+        const alertaError = document.createElement('div');
+        alertaError.className = 'alert alert-danger';
+        alertaError.textContent = 'Error cargando planes';
+        contenedor.appendChild(alertaError);
     }
 }
 
-export function mostrarFormPlan(contenedor){
+export function mostrarFormPlan(contenedor) {
+    contenedor.innerHTML = '';
 
-    contenedor.innerHTML=`
-    <div class="card p-4">
-        <h4>Nuevo plan</h4>
+    const tarjeta = document.createElement('div');
+    tarjeta.className = 'card p-4';
 
-        <input id="planNombre" class="form-control mb-2" placeholder="Nombre">
+    const titulo = document.createElement('h4');
+    titulo.textContent = 'Nuevo plan';
+    tarjeta.appendChild(titulo);
 
-        <textarea id="planDesc" class="form-control mb-2"
-            placeholder="Descripción"></textarea>
+    const inputNombre = document.createElement('input');
+    inputNombre.id = 'planNombre';
+    inputNombre.className = 'form-control mb-2';
+    inputNombre.placeholder = 'Nombre';
+    tarjeta.appendChild(inputNombre);
 
-        <input id="planInicio" type="date"
-            class="form-control mb-2">
+    const inputDesc = document.createElement('textarea');
+    inputDesc.id = 'planDesc';
+    inputDesc.className = 'form-control mb-2';
+    inputDesc.placeholder = 'Descripción';
+    tarjeta.appendChild(inputDesc);
 
-        <input id="planFin" type="date"
-            class="form-control mb-2">
+    const inputInicio = document.createElement('input');
+    inputInicio.id = 'planInicio';
+    inputInicio.type = 'date';
+    inputInicio.className = 'form-control mb-2';
+    tarjeta.appendChild(inputInicio);
 
-        <textarea id="planObj" class="form-control mb-2"
-            placeholder="Objetivo"></textarea>
+    const inputFin = document.createElement('input');
+    inputFin.id = 'planFin';
+    inputFin.type = 'date';
+    inputFin.className = 'form-control mb-2';
+    tarjeta.appendChild(inputFin);
 
-        <button class="btn btn-success"
-            onclick="window.guardarPlan()">
-            Guardar
-        </button>
-    </div>`;
+    const inputObj = document.createElement('textarea');
+    inputObj.id = 'planObj';
+    inputObj.className = 'form-control mb-2';
+    inputObj.placeholder = 'Objetivo';
+    tarjeta.appendChild(inputObj);
+
+    const btnGuardar = document.createElement('button');
+    btnGuardar.className = 'btn btn-success';
+    btnGuardar.textContent = 'Guardar';
+    btnGuardar.onclick = () => window.guardarPlan();
+    tarjeta.appendChild(btnGuardar);
+
+    contenedor.appendChild(tarjeta);
 }
 
-export async function guardarPlan(csrfToken, reload){
-
-    const data={
-        nombre:document.getElementById('planNombre').value,
-        descripcion:document.getElementById('planDesc').value,
-        fecha_inicio:document.getElementById('planInicio').value,
-        fecha_fin:document.getElementById('planFin').value,
-        objetivo:document.getElementById('planObj').value
+export async function guardarPlan(csrfToken, reload) {
+    const data = {
+        nombre: document.getElementById('planNombre').value,
+        descripcion: document.getElementById('planDesc').value,
+        fecha_inicio: document.getElementById('planInicio').value,
+        fecha_fin: document.getElementById('planFin').value,
+        objetivo: document.getElementById('planObj').value
     };
 
-    try{
-        const res=await fetch('/planes-ent',{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-                'X-CSRF-TOKEN':csrfToken
+    try {
+        const res = await fetch('/planes-ent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
             },
-            body:JSON.stringify(data)
+            body: JSON.stringify(data)
         });
 
-        if(!res.ok) throw new Error();
+        if (!res.ok) throw new Error();
 
         alert("Plan creado");
         reload();
 
-    }catch{
+    } catch {
         alert("Error guardando plan");
     }
 }
 
-export async function verPlan(id,contenedor){
+export async function verPlan(id, contenedor) {
+    const res = await fetch('/planes-ent/' + id);
+    const p = await res.json();
 
-    const res=await fetch('/planes-ent/'+id);
-    const p=await res.json();
+    contenedor.innerHTML = '';
 
-    contenedor.innerHTML=`
-    <div class="card p-4">
-        <h4>${p.nombre}</h4>
-        <p>${p.descripcion??''}</p>
-        <p><b>Inicio:</b> ${p.fecha_inicio}</p>
-        <p><b>Fin:</b> ${p.fecha_fin??'-'}</p>
-        <p><b>Objetivo:</b> ${p.objetivo??''}</p>
-    </div>`;
+    const tarjeta = document.createElement('div');
+    tarjeta.className = 'card p-4';
+
+    const titulo = document.createElement('h4');
+    titulo.textContent = p.nombre;
+    tarjeta.appendChild(titulo);
+
+    const parrafoDesc = document.createElement('p');
+    parrafoDesc.textContent = p.descripcion ?? '';
+    tarjeta.appendChild(parrafoDesc);
+
+    // Función para texto con negrita
+    const crearLinea = (etiqueta, valor) => {
+        const parrafo = document.createElement('p');
+        const negrita = document.createElement('b');
+        negrita.textContent = etiqueta + ': ';
+        parrafo.appendChild(negrita);
+        parrafo.appendChild(document.createTextNode(valor));
+        return parrafo;
+    };
+
+    tarjeta.appendChild(crearLinea('Inicio', p.fecha_inicio));
+    tarjeta.appendChild(crearLinea('Fin', p.fecha_fin ?? '-'));
+    tarjeta.appendChild(crearLinea('Objetivo', p.objetivo ?? ''));
+
+    contenedor.appendChild(tarjeta);
 }
 
-export async function eliminarPlan(id,csrfToken,reload){
+export async function eliminarPlan(id, csrfToken, reload) {
+    if (!confirm("Eliminar plan?")) return;
 
-    if(!confirm("Eliminar plan?")) return;
-
-    await fetch('/planes-ent/'+id,{
-        method:'DELETE',
-        headers:{'X-CSRF-TOKEN':csrfToken}
+    await fetch('/planes-ent/' + id, {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': csrfToken }
     });
 
     reload();

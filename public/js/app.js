@@ -6,7 +6,6 @@ import { mostrarCalendarioSesiones } from './modules/calendario.js';
 import { mostrarPanelEntrenamientos,cargarEntrenamientos,verEntrenamiento,mostrarFormEntrenamiento,guardarEntrenamiento} from './modules/entrenamientos.js';
 import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan, eliminarPlan } from './modules/planes.js';
 
-    // --- REFERENCIAS DOM ---
     const vistaLogin = document.getElementById('vista-login');
     const vistaDashboard = document.getElementById('vista-dashboard');
     const menuContainer = document.getElementById('dynamic-menu-container');
@@ -31,7 +30,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
 
     verificarEstadoSesion();
 
-    // ================= LOGIN =================
+    // LOGIN    
     const formLogin = document.getElementById('main-login-form');
     if (formLogin) {
         formLogin.addEventListener('submit', async (e) => {
@@ -65,7 +64,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
         });
     }
 
-    // ================= LOGOUT =================
+    // LOGOUT
     const formLogout = document.getElementById('form-logout');
     if (formLogout) {
         formLogout.addEventListener('submit', async (e) => {
@@ -82,7 +81,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
         });
     }
 
-    // ================= DASHBOARD =================
+    // DASHBOARD
     function mostrarDashboard() {
         vistaLogin.classList.add('hidden');
         vistaDashboard.classList.remove('hidden');
@@ -90,7 +89,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
         cargarModulo('/inicio', 'Inicio');
     }
 
-    // ================= MENU DINÁMICO =================
+    // Menú dinámico
     async function cargarMenuDinamico() {
         const res = await fetch('/menus.json');
         const data = await res.json();
@@ -144,7 +143,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
         }
     }
 
-    // ================= ENRUTADOR (CARGAR MÓDULO) =================
+    // Enrutador
     async function cargarModulo(endpoint, nombre) {
         tituloSeccion.textContent = nombre;
 
@@ -156,10 +155,14 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
         if (endpoint === '/entrenamientos') return mostrarPanelEntrenamientos(contenedorPrincipal);
         if (endpoint === '/planes-ent') { return mostrarPanelPlanes(contenedorPrincipal);}
 
-        contenedorPrincipal.innerHTML = `<div class="alert alert-info">Bienvenido a la sección ${nombre}</div>`;
+        contenedorPrincipal.innerHTML = '';
+        const alertaInfo = document.createElement('div');
+        alertaInfo.className = 'alert alert-info';
+        alertaInfo.textContent = `Bienvenido a la sección ${nombre}`;
+        contenedorPrincipal.appendChild(alertaInfo);    
     }
 
-    // ================= DELEGACIÓN PARA EL HTML INLINE =================
+    // Enviamos a buscar otros js para que no se carguen todos aquí y sea un archivo infinito
     // Bloques
     window.cargarBloques = () => cargarBloques(contenedorPrincipal);
     window.mostrarFormBloque = () => mostrarFormBloque(contenedorPrincipal);
@@ -182,7 +185,6 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
     // Entrenamientos
     window.cargarEntrenamientos = () => cargarEntrenamientos(contenedorPrincipal);
     window.verEntrenamiento = (id) => verEntrenamiento(id, contenedorPrincipal);
-    // window.mostrarFormEntrenamiento() // No estaba definido en tu código original
 
     // Perfil
     window.mostrarFormPerfil = () => mostrarFormPerfil();

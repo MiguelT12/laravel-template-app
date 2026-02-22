@@ -7,7 +7,6 @@
 
     <title>PROYECTO DAW</title>
 
-    <!-- TU CSS -->
     <link href="{{ asset('css/index.css') }}" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,9 +18,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-
-
-
+    <script type="module" src="{{ asset('js/app.js') }}?t={{ time() }}"></script>
 </head>
 <body>
 <div id="vista-login" class="login-wrapper">
@@ -82,7 +79,6 @@
 
 
 <div id="vista-dashboard" class="hidden">
-
     <nav class="navbar navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
             <span class="navbar-brand">PROYECTO DAW</span>
@@ -97,20 +93,16 @@
     </nav>
 
     <div class="container mt-4">
-        <h2 id="titulo-seccion">Bienvenido</h2>
+        <h2 id="titulo-seccion"></h2>
         <hr>
-
         <div id="contenedor-principal">
-            <div class="alert alert-info text-center">
-                Selecciona una opción del menú para comenzar.
-            </div>
+            <div class="alert alert-info text-center"></div>
         </div>
     </div>
-
 </div>
 
 
-<script type="module" src="{{ asset('js/app.js') }}?t={{ time() }}"></script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

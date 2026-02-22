@@ -32,19 +32,19 @@ class Entrenamiento extends Model
 
     // RELACIONES 
 
-    // Pertenece a un Ciclista (quién lo hizo)
+    // Pertenece a un Ciclista 
     public function ciclista()
     {
         return $this->belongsTo(Ciclista::class, 'id_ciclista');
     }
 
-    // Pertenece a una Bicicleta (con qué bici lo hizo)
+    // Pertenece a una Bicicleta 
     public function bicicleta()
     {
         return $this->belongsTo(Bicicleta::class, 'id_bicicleta');
     }
 
-    // Puede estar vinculado a una Sesión planificada (qué se suponía que iba a hacer)
+    // Puede estar vinculado a una Sesión planificada 
     public function sesion()
     {
         return $this->belongsTo(SesionEntrenamiento::class, 'id_sesion');

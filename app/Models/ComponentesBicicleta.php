@@ -33,7 +33,7 @@ class ComponentesBicicleta extends Model
         return $this->belongsTo(Bicicleta::class, 'id_bicicleta');
     }
 
-    // Pertenece a un "Tipo" (ej: es una Cadena, es un Pedal...) [cite: 48]
+    // Pertenece a un tipo
     public function tipoComponente()
     {
         return $this->belongsTo(TipoComponente::class, 'id_tipo_componente');
