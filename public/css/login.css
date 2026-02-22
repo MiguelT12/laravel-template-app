@@ -1,20 +1,17 @@
-/* ===== CONFIGURACIÓN DE COLORES PRO ===== */
 :root {
-    --primary: #2563eb;      /* Azul competición */
-    --accent: #d4ff00;       /* Amarillo flúor (detalles) */
-    --bg-body: #f1f5f9;      /* Gris azulado muy claro */
-    --text-dark: #0f172a;    /* Negro pizarra */
+    --primary: #2563eb;      
+    --accent: #d4ff00;       
+    --bg-body: #f1f5f9;      
+    --text-dark: #0f172a;    
     --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== BASE ===== */
 body {
     background-color: var(--bg-body) !important;
     font-family: 'Inter', 'Segoe UI', sans-serif;
     color: var(--text-dark);
 }
 
-/* ===== NAVBAR MODERNA ===== */
 .navbar {
     background: white !important;
     border-bottom: 2px solid #e2e8f0;
@@ -40,7 +37,6 @@ body {
     transform: translateY(-1px);
 }
 
-/* ===== TARJETA DE LOGIN (ESTILO APP PREMIUM) ===== */
 #section-login {
     padding-top: 5rem;
 }
@@ -68,7 +64,6 @@ body {
     background: white;
 }
 
-/* ===== FORMULARIOS ===== */
 label {
     font-weight: 700;
     font-size: 0.85rem;
@@ -91,7 +86,6 @@ label {
     background: white !important;
 }
 
-/* ===== BOTONES ===== */
 .btn-primary {
     background: var(--primary) !important;
     border: none !important;
@@ -110,7 +104,6 @@ label {
     filter: brightness(1.1);
 }
 
-/* ===== TABLAS (Para cuando las cargues) ===== */
 .table {
     background: white;
     border-radius: 15px;
@@ -134,7 +127,6 @@ label {
     font-weight: 500;
 }
 
-/* ===== UTILIDADES ===== */
 .d-none { display: none !important; }
 
 p {

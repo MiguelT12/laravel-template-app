@@ -7,15 +7,20 @@ use App\Models\SesionEntrenamiento;
 
 class SesionEntrenamientoController extends Controller
 {
-    // LISTAR
-    public function index()
+   public function index(Request $request)
     {
-        return response()->json(
-            SesionEntrenamiento::orderBy('fecha','desc')->get()
-        );
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', 10);
+
+        $sesiones = \App\Models\SesionEntrenamiento::orderBy('fecha', 'desc')
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+
+        return response()->json($sesiones);
     }
 
-    // CREAR
+    // Crear    
     public function store(Request $request)
     {
         $request->validate([
@@ -34,7 +39,7 @@ class SesionEntrenamientoController extends Controller
         return response()->json($sesion, 201);
     }
 
-    // ELIMINAR
+    // Eliminar
     public function destroy($id)
     {
         $sesion = SesionEntrenamiento::findOrFail($id);
@@ -43,7 +48,7 @@ class SesionEntrenamientoController extends Controller
         return response()->json(['ok'=>true]);
     }
 
-    // VER BLOQUES DE UNA SESION
+    // Ver bloques de una sesión
     public function bloques($id)
     {
         $sesion = SesionEntrenamiento::with('bloques')->findOrFail($id);

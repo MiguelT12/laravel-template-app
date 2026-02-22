@@ -24,9 +24,7 @@ class ComponentesBicicleta extends Model
         'activo', 
         'comentario'
     ];
-
-    // RELACIONES
-
+    // Realaciones
     // Pertenece a una bicicleta concreta
     public function bicicleta()
     {

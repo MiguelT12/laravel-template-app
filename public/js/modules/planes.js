@@ -193,7 +193,6 @@ export async function verPlan(id, contenedor) {
     parrafoDesc.textContent = p.descripcion ?? '';
     tarjeta.appendChild(parrafoDesc);
 
-    // Función para texto con negrita
     const crearLinea = (etiqueta, valor) => {
         const parrafo = document.createElement('p');
         const negrita = document.createElement('b');
@@ -211,7 +210,7 @@ export async function verPlan(id, contenedor) {
 }
 
 export async function eliminarPlan(id, csrfToken, reload) {
-    if (!confirm("Eliminar plan?")) return;
+    if (!confirm("¿Eliminar plan?")) return;
 
     await fetch('/planes-ent/' + id, {
         method: 'DELETE',

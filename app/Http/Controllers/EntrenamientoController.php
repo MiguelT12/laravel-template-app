@@ -26,7 +26,6 @@ class EntrenamientoController extends Controller
         );
     }
 
-    // Guardar
     public function store(Request $request)
     {
         $request->validate([
@@ -35,9 +34,19 @@ class EntrenamientoController extends Controller
             'kilometros' => 'required|numeric'
         ]);
 
+        // Si no hay bici, se crea una automática
+        $bicicleta = \App\Models\Bicicleta::first();
+
+        if (!$bicicleta) {
+            $bicicleta = \App\Models\Bicicleta::create([
+                'nombre' => 'Bicicleta por defecto',
+                'tipo' => 'carretera'
+            ]);
+        }
+
         return Entrenamiento::create([
             'id_ciclista' => auth()->id(),
-            'id_bicicleta' => 1,
+            'id_bicicleta' => $bicicleta->id,
             'id_sesion' => null,
 
             'fecha' => $request->fecha,

@@ -30,8 +30,7 @@ class Entrenamiento extends Model
         'comentario'
     ];
 
-    // RELACIONES 
-
+    // Relaciones
     // Pertenece a un Ciclista 
     public function ciclista()
     {

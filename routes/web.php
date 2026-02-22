@@ -9,6 +9,7 @@ use App\Http\Controllers\SesionEntrenamientoController;
 use App\Http\Controllers\SesionBloqueController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\EntrenamientoController;
+use App\Http\Controllers\PlanEntrenamientoController;
 
 Route::get('/', function () {
     return view('index');
@@ -66,6 +67,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/entrenamientos/{id}', [EntrenamientoController::class, 'show']);
     Route::delete('/entrenamientos/{id}', [EntrenamientoController::class, 'destroy']);
 
+    // Planes de entrenamiento
+    Route::get('/planes-ent', [PlanEntrenamientoController::class, 'index']);
+    Route::post('/planes-ent', [PlanEntrenamientoController::class, 'store']);
+    Route::get('/planes-ent/{id}', [PlanEntrenamientoController::class, 'show']);
+    Route::delete('/planes-ent/{id}', [PlanEntrenamientoController::class, 'destroy']); 
+
     // Editar los datos del usuario
     Route::put('/datos-perfil', function (\Illuminate\Http\Request $request) {
     $user = $request->user();
@@ -79,7 +86,7 @@ Route::middleware('auth')->group(function () {
 });
 });
 
-// PARA PASAR LOS DATOS DEL USUARIO Y SE MUESTREN EN PANTALLA
+// Para pasar los datos del usuario y se muestren en pantalla
 Route::middleware('auth')->get('/datos-perfil', function (\Illuminate\Http\Request $request) {
     return response()->json($request->user());
 });

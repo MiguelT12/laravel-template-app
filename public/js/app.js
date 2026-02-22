@@ -6,6 +6,7 @@ import { mostrarCalendarioSesiones } from './modules/calendario.js';
 import { mostrarPanelEntrenamientos,cargarEntrenamientos,verEntrenamiento,mostrarFormEntrenamiento,guardarEntrenamiento} from './modules/entrenamientos.js';
 import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan, eliminarPlan } from './modules/planes.js';
 
+
     const vistaLogin = document.getElementById('vista-login');
     const vistaDashboard = document.getElementById('vista-dashboard');
     const menuContainer = document.getElementById('dynamic-menu-container');
@@ -30,7 +31,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
 
     verificarEstadoSesion();
 
-    // LOGIN    
+    // Login 
     const formLogin = document.getElementById('main-login-form');
     if (formLogin) {
         formLogin.addEventListener('submit', async (e) => {
@@ -64,7 +65,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
         });
     }
 
-    // LOGOUT
+    // Logout
     const formLogout = document.getElementById('form-logout');
     if (formLogout) {
         formLogout.addEventListener('submit', async (e) => {
@@ -81,7 +82,7 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
         });
     }
 
-    // DASHBOARD
+    // Dashboard
     function mostrarDashboard() {
         vistaLogin.classList.add('hidden');
         vistaDashboard.classList.remove('hidden');
@@ -149,17 +150,30 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
 
         if (endpoint === '/inicio') return mostrarInicio(contenedorPrincipal);
         if (endpoint === '/profile') return cargarPerfil(contenedorPrincipal);
-        if (endpoint === '/bloques') return mostrarPanelBloques(contenedorPrincipal);
-        if (endpoint === '/sesiones' || endpoint === '/sesiones-web') return mostrarPanelSesiones(contenedorPrincipal);
-        if (endpoint === '/sesiones-ent') return window.mostrarCalendarioSesiones();
-        if (endpoint === '/entrenamientos') return mostrarPanelEntrenamientos(contenedorPrincipal);
-        if (endpoint === '/planes-ent') { return mostrarPanelPlanes(contenedorPrincipal);}
+
+        // BLOQUES
+        if (endpoint === '/bloques')
+            return mostrarPanelBloques(contenedorPrincipal);
+
+        // SESIÓN DE BLOQUES (gestión de sesiones)
+        if (endpoint === '/sesiones' || endpoint === '/sesiones-web')
+            return mostrarPanelSesiones(contenedorPrincipal, csrfToken);
+
+        // SESIÓN DE ENTRENAMIENTOS (calendario + scroll)
+        if (endpoint === '/sesiones-ent')
+            return window.mostrarCalendarioSesiones();
+
+        if (endpoint === '/entrenamientos')
+            return mostrarPanelEntrenamientos(contenedorPrincipal);
+
+        if (endpoint === '/planes-ent')
+            return mostrarPanelPlanes(contenedorPrincipal);
 
         contenedorPrincipal.innerHTML = '';
         const alertaInfo = document.createElement('div');
         alertaInfo.className = 'alert alert-info';
         alertaInfo.textContent = `Bienvenido a la sección ${nombre}`;
-        contenedorPrincipal.appendChild(alertaInfo);    
+        contenedorPrincipal.appendChild(alertaInfo);
     }
 
     // Enviamos a buscar otros js para que no se carguen todos aquí y sea un archivo infinito

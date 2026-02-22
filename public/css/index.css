@@ -1,4 +1,3 @@
-/* === ESTILOS GENERALES (Reset básico) === */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f0f2f5;
@@ -14,14 +13,12 @@
         .text-muted { color: #6c757d; font-size: 0.9em; }
         hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
 
-        /* === CONTENEDORES === */
         .container {
             max-width: 960px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* === PANTALLA DE LOGIN === */
         .login-wrapper {
             display: flex;
             justify-content: center;
@@ -46,7 +43,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box; /* Para que el padding no rompa el ancho */
+            box-sizing: border-box; 
         }
 
         .btn {
@@ -65,11 +62,10 @@
         .btn-primary {
             background-color: #0d6efd;
             color: white;
-            width: 100%; /* Botón ancho en login */
+            width: 100%; 
         }
         .btn-primary:hover { background-color: #0b5ed7; }
 
-        /* === BARRA DE NAVEGACIÓN (NAVBAR) === */
         .navbar {
             background-color: #212529;
             color: white;
@@ -161,8 +157,6 @@
         }
         .btn-logout:hover { background: #dc3545; color: white; }
 
-        /* === TARJETAS DE ENTRENAMIENTO (Generadas por JS) === */
-        /* Estas clases imitan a Bootstrap porque tu JS genera HTML con estas clases */
         .row {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -191,7 +185,6 @@
             text-align: center;
         }
 
-        /* Mensajes de Alerta */
         .alert {
             padding: 1rem;
             margin-bottom: 1rem;
