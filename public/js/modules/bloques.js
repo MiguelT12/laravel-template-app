@@ -19,7 +19,7 @@ export function mostrarPanelBloques(contenedor) {
     divBotones.appendChild(botonVer);
 
     const botonCrear = document.createElement('button');
-    botonCrear.className = 'btn btn-success';
+    botonCrear.className = 'btn btn-success w-100';
     botonCrear.textContent = 'Crear bloque';
     botonCrear.onclick = () => mostrarFormBloque(contenedor);
     divBotones.appendChild(botonCrear);
