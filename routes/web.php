@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/planes-ent', [PlanEntrenamientoController::class, 'index']);
     Route::post('/planes-ent', [PlanEntrenamientoController::class, 'store']);
     Route::get('/planes-ent/{id}', [PlanEntrenamientoController::class, 'show']);
+    Route::put('/planes-ent/{id}', [PlanEntrenamientoController::class, 'update']);
     Route::delete('/planes-ent/{id}', [PlanEntrenamientoController::class, 'destroy']); 
 
     // Editar los datos del usuario

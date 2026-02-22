@@ -37,6 +37,30 @@ class PlanEntrenamientoController extends Controller
             ->findOrFail($id);
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:100',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
+            'descripcion' => 'nullable|string',
+            'objetivo' => 'nullable|string',
+        ]);
+
+        $plan = PlanEntrenamiento::where('id_ciclista', Auth::id())
+            ->findOrFail($id);
+
+        $plan->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'fecha_inicio' => $request->fecha_inicio,
+            'fecha_fin' => $request->fecha_fin,
+            'objetivo' => $request->objetivo,
+        ]);
+
+        return response()->json($plan);
+    }
+
     public function destroy($id)
     {
         $plan = PlanEntrenamiento::where('id_ciclista', Auth::id())

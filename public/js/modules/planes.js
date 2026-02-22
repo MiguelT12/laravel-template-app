@@ -77,6 +77,14 @@ export async function cargarPlanes(contenedor) {
 
             celdaAcciones.appendChild(document.createTextNode(' '));
 
+            const btnModificar = document.createElement('button');
+            btnModificar.className = 'btn btn-sm btn-warning';
+            btnModificar.textContent = 'Modificar';
+            btnModificar.onclick = () => window.mostrarFormEditarPlan(p.id);
+            celdaAcciones.appendChild(btnModificar);
+
+            celdaAcciones.appendChild(document.createTextNode(' '));
+
             const btnEliminar = document.createElement('button');
             btnEliminar.className = 'btn btn-sm btn-danger';
             btnEliminar.textContent = 'Eliminar';
@@ -207,6 +215,108 @@ export async function verPlan(id, contenedor) {
     tarjeta.appendChild(crearLinea('Objetivo', p.objetivo ?? ''));
 
     contenedor.appendChild(tarjeta);
+}
+
+export async function mostrarFormEditarPlan(id, contenedor) {
+    try {
+        const res = await fetch('/planes-ent/' + id, {
+            headers: { Accept: 'application/json' }
+        });
+
+        if (!res.ok) throw new Error();
+
+        const p = await res.json();
+
+        contenedor.innerHTML = '';
+
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'card p-4';
+
+        const titulo = document.createElement('h4');
+        titulo.textContent = 'Modificar plan';
+        tarjeta.appendChild(titulo);
+
+        const inputNombre = document.createElement('input');
+        inputNombre.id = 'planEditNombre';
+        inputNombre.className = 'form-control mb-2';
+        inputNombre.placeholder = 'Nombre';
+        inputNombre.value = p.nombre ?? '';
+        tarjeta.appendChild(inputNombre);
+
+        const inputDesc = document.createElement('textarea');
+        inputDesc.id = 'planEditDesc';
+        inputDesc.className = 'form-control mb-2';
+        inputDesc.placeholder = 'Descripción';
+        inputDesc.value = p.descripcion ?? '';
+        tarjeta.appendChild(inputDesc);
+
+        const inputInicio = document.createElement('input');
+        inputInicio.id = 'planEditInicio';
+        inputInicio.type = 'date';
+        inputInicio.className = 'form-control mb-2';
+        inputInicio.value = p.fecha_inicio ?? '';
+        tarjeta.appendChild(inputInicio);
+
+        const inputFin = document.createElement('input');
+        inputFin.id = 'planEditFin';
+        inputFin.type = 'date';
+        inputFin.className = 'form-control mb-2';
+        inputFin.value = p.fecha_fin ?? '';
+        tarjeta.appendChild(inputFin);
+
+        const inputObj = document.createElement('textarea');
+        inputObj.id = 'planEditObj';
+        inputObj.className = 'form-control mb-2';
+        inputObj.placeholder = 'Objetivo';
+        inputObj.value = p.objetivo ?? '';
+        tarjeta.appendChild(inputObj);
+
+        const btnGuardar = document.createElement('button');
+        btnGuardar.className = 'btn btn-success';
+        btnGuardar.textContent = 'Guardar cambios';
+        btnGuardar.onclick = () => window.actualizarPlan(id);
+        tarjeta.appendChild(btnGuardar);
+
+        tarjeta.appendChild(document.createTextNode(' '));
+
+        const btnCancelar = document.createElement('button');
+        btnCancelar.className = 'btn btn-secondary';
+        btnCancelar.textContent = 'Cancelar';
+        btnCancelar.onclick = () => window.cargarPlanes();
+        tarjeta.appendChild(btnCancelar);
+
+        contenedor.appendChild(tarjeta);
+    } catch {
+        alert('Error cargando el plan para editar');
+    }
+}
+
+export async function actualizarPlan(id, csrfToken, reload) {
+    const data = {
+        nombre: document.getElementById('planEditNombre').value,
+        descripcion: document.getElementById('planEditDesc').value,
+        fecha_inicio: document.getElementById('planEditInicio').value,
+        fecha_fin: document.getElementById('planEditFin').value,
+        objetivo: document.getElementById('planEditObj').value
+    };
+
+    try {
+        const res = await fetch('/planes-ent/' + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error();
+
+        alert('Plan actualizado');
+        reload();
+    } catch {
+        alert('Error actualizando plan');
+    }
 }
 
 export async function eliminarPlan(id, csrfToken, reload) {

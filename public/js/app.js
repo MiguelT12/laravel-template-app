@@ -4,7 +4,7 @@ import { mostrarPanelBloques, cargarBloques, mostrarFormBloque, crearBloque, eli
 import { mostrarPanelSesiones, cargarSesiones, mostrarFormSesion, crearSesion, eliminarSesion, verBloquesSesion, mostrarFormAgregarBloqueSesion, agregarBloqueSesion, eliminarBloqueSesion } from './modules/sesiones.js';
 import { mostrarCalendarioSesiones } from './modules/calendario.js';
 import { mostrarPanelEntrenamientos,cargarEntrenamientos,verEntrenamiento,mostrarFormEntrenamiento,guardarEntrenamiento} from './modules/entrenamientos.js';
-import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan, eliminarPlan } from './modules/planes.js';
+import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan, eliminarPlan, mostrarFormEditarPlan, actualizarPlan } from './modules/planes.js';
 
 
     const vistaLogin = document.getElementById('vista-login');
@@ -213,4 +213,6 @@ import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan
     window.mostrarFormPlan = () => mostrarFormPlan(contenedorPrincipal);
     window.guardarPlan = () => guardarPlan(csrfToken, window.cargarPlanes);
     window.verPlan = (id) => verPlan(id, contenedorPrincipal);
+    window.mostrarFormEditarPlan = (id) => mostrarFormEditarPlan(id, contenedorPrincipal);
+    window.actualizarPlan = (id) => actualizarPlan(id, csrfToken, window.cargarPlanes);
     window.eliminarPlan = (id) => eliminarPlan(id, csrfToken, window.cargarPlanes);
