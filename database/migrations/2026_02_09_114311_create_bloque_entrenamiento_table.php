@@ -17,7 +17,7 @@ class CreateBloqueEntrenamientoTable extends Migration
 
         $table->id();
 
-        // 🔥 RELACIÓN CON CICLISTA
+        // Relación con ciclista
         $table->unsignedBigInteger('id_ciclista');
 
         $table->string('nombre', 100);
@@ -33,7 +33,7 @@ class CreateBloqueEntrenamientoTable extends Migration
 
         $table->timestamps();
 
-        // 🔥 FOREIGN KEY
+        // Claves foráneas
         $table->foreign('id_ciclista')
               ->references('id')
               ->on('ciclista')

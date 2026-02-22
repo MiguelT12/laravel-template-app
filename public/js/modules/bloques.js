@@ -1,5 +1,4 @@
 export function mostrarPanelBloques(contenedor) {
-
     contenedor.innerHTML = '';
 
     const tarjeta = document.createElement('div');
@@ -30,11 +29,14 @@ export function mostrarPanelBloques(contenedor) {
 }
 
 export async function cargarBloques(contenedor) {
-
-    contenedor.innerHTML = '<div class="text-center p-3">Cargando bloques...</div>';
+    contenedor.innerHTML = '';
+    
+    const divCargando = document.createElement('div');
+    divCargando.className = 'text-center p-3';
+    divCargando.textContent = 'Cargando bloques...';
+    contenedor.appendChild(divCargando);
 
     try {
-
         const res = await fetch('/bloques', {
             headers: { 'Accept': 'application/json' }
         });
@@ -52,47 +54,58 @@ export async function cargarBloques(contenedor) {
         contenedor.appendChild(btnVolver);
 
         if (bloques.length === 0) {
-            contenedor.innerHTML += `<div class="alert alert-info">No hay bloques creados</div>`;
+            const alertaInfo = document.createElement('div');
+            alertaInfo.className = 'alert alert-info';
+            alertaInfo.textContent = 'No hay bloques creados';
+            contenedor.appendChild(alertaInfo);
             return;
         }
 
         const tabla = document.createElement('table');
         tabla.className = 'table table-striped';
 
-        tabla.innerHTML = `
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Tipo</th>
-                    <th>Duración</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-        `;
+        const thead = document.createElement('thead');
+        const trHead = document.createElement('tr');
+        
+        const titulos = ['ID', 'Nombre', 'Tipo', 'Duración', 'Acciones'];
+        titulos.forEach(texto => {
+            const th = document.createElement('th');
+            th.textContent = texto;
+            trHead.appendChild(th);
+        });
+        
+        thead.appendChild(trHead);
+        tabla.appendChild(thead);
 
         const tbody = document.createElement('tbody');
 
         bloques.forEach(b => {
-
             const tr = document.createElement('tr');
 
-            tr.innerHTML = `
-                <td>${b.id}</td>
-                <td>${b.nombre}</td>
-                <td>${b.tipo}</td>
-                <td>${b.duracion_estimada ?? '-'}</td>
-                <td></td>
-            `;
+            const tdId = document.createElement('td');
+            tdId.textContent = b.id;
+            tr.appendChild(tdId);
 
-            const tdAcciones = tr.lastElementChild;
+            const tdNombre = document.createElement('td');
+            tdNombre.textContent = b.nombre;
+            tr.appendChild(tdNombre);
 
+            const tdTipo = document.createElement('td');
+            tdTipo.textContent = b.tipo;
+            tr.appendChild(tdTipo);
+
+            const tdDuracion = document.createElement('td');
+            tdDuracion.textContent = b.duracion_estimada ?? '-';
+            tr.appendChild(tdDuracion);
+
+            const tdAcciones = document.createElement('td');
             const btnEliminar = document.createElement('button');
             btnEliminar.className = 'btn btn-danger btn-sm';
             btnEliminar.textContent = 'Eliminar';
             btnEliminar.onclick = () => eliminarBloque(b.id, () => cargarBloques(contenedor));
-
             tdAcciones.appendChild(btnEliminar);
+            
+            tr.appendChild(tdAcciones);
             tbody.appendChild(tr);
         });
 
@@ -101,39 +114,61 @@ export async function cargarBloques(contenedor) {
 
     } catch (error) {
         console.error(error);
-        contenedor.innerHTML = `<div class="alert alert-danger">Error cargando bloques</div>`;
+        contenedor.innerHTML = '';
+        const alertaError = document.createElement('div');
+        alertaError.className = 'alert alert-danger';
+        alertaError.textContent = 'Error cargando bloques';
+        contenedor.appendChild(alertaError);
     }
 }
 
 export function mostrarFormBloque(contenedor) {
-
     contenedor.innerHTML = '';
 
     const tarjeta = document.createElement('div');
     tarjeta.className = 'card p-4 shadow-sm';
 
-    tarjeta.innerHTML = `
-        <h4>Nuevo bloque</h4>
+    const titulo = document.createElement('h4');
+    titulo.textContent = 'Nuevo bloque';
+    tarjeta.appendChild(titulo);
 
-        <input id="bloqueNombre" class="form-control mb-2" placeholder="Nombre">
-        <input id="bloqueTipo" class="form-control mb-2" placeholder="Tipo">
-        <input id="bloqueDuracion" class="form-control mb-3" type="number" placeholder="Duración minutos">
+    const inputNombre = document.createElement('input');
+    inputNombre.id = 'bloqueNombre';
+    inputNombre.className = 'form-control mb-2';
+    inputNombre.placeholder = 'Nombre';
+    tarjeta.appendChild(inputNombre);
 
-        <button id="guardarBloque" class="btn btn-success me-2">Guardar</button>
-        <button id="cancelarBloque" class="btn btn-secondary">Cancelar</button>
-    `;
+    const inputTipo = document.createElement('input');
+    inputTipo.id = 'bloqueTipo';
+    inputTipo.className = 'form-control mb-2';
+    inputTipo.placeholder = 'Tipo';
+    tarjeta.appendChild(inputTipo);
+
+    const inputDuracion = document.createElement('input');
+    inputDuracion.id = 'bloqueDuracion';
+    inputDuracion.className = 'form-control mb-3';
+    inputDuracion.type = 'number';
+    inputDuracion.placeholder = 'Duración minutos';
+    tarjeta.appendChild(inputDuracion);
+
+    const btnGuardar = document.createElement('button');
+    btnGuardar.id = 'guardarBloque';
+    btnGuardar.className = 'btn btn-success me-2';
+    btnGuardar.textContent = 'Guardar';
+    btnGuardar.onclick = () => crearBloque(() => cargarBloques(contenedor));
+    tarjeta.appendChild(btnGuardar);
+
+    const btnCancelar = document.createElement('button');
+    btnCancelar.id = 'cancelarBloque';
+    btnCancelar.className = 'btn btn-secondary';
+    btnCancelar.textContent = 'Cancelar';
+    btnCancelar.onclick = () => mostrarPanelBloques(contenedor);
+    tarjeta.appendChild(btnCancelar);
 
     contenedor.appendChild(tarjeta);
-
-    document.getElementById('guardarBloque').onclick =
-        () => crearBloque(() => cargarBloques(contenedor));
-
-    document.getElementById('cancelarBloque').onclick =
-        () => mostrarPanelBloques(contenedor);
 }
 
 export async function crearBloque(reloadCb) {
-
     const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
     const nombre = document.getElementById('bloqueNombre').value;
@@ -146,7 +181,6 @@ export async function crearBloque(reloadCb) {
     }
 
     try {
-
         const res = await fetch('/bloques', {
             method: 'POST',
             headers: {
@@ -167,13 +201,11 @@ export async function crearBloque(reloadCb) {
 }
 
 export async function eliminarBloque(id, reloadCb) {
-
     const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
     if (!confirm("¿Eliminar bloque?")) return;
 
     try {
-
         const res = await fetch(`/bloques/${id}`, {
             method: 'DELETE',
             headers: { 'X-CSRF-TOKEN': csrf }
