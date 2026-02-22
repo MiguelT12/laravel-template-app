@@ -4,6 +4,7 @@ import { mostrarPanelBloques, cargarBloques, mostrarFormBloque, crearBloque, eli
 import { mostrarPanelSesiones, cargarSesiones, mostrarFormSesion, crearSesion, eliminarSesion, verBloquesSesion, mostrarFormAgregarBloqueSesion, agregarBloqueSesion, eliminarBloqueSesion } from './modules/sesiones.js';
 import { mostrarCalendarioSesiones } from './modules/calendario.js';
 import { mostrarPanelEntrenamientos,cargarEntrenamientos,verEntrenamiento,mostrarFormEntrenamiento,guardarEntrenamiento} from './modules/entrenamientos.js';
+import { mostrarPanelPlanes, cargarPlanes, mostrarFormPlan, guardarPlan, verPlan, eliminarPlan } from './modules/planes.js';
 
     // --- REFERENCIAS DOM ---
     const vistaLogin = document.getElementById('vista-login');
@@ -153,11 +154,7 @@ import { mostrarPanelEntrenamientos,cargarEntrenamientos,verEntrenamiento,mostra
         if (endpoint === '/sesiones' || endpoint === '/sesiones-web') return mostrarPanelSesiones(contenedorPrincipal);
         if (endpoint === '/sesiones-ent') return window.mostrarCalendarioSesiones();
         if (endpoint === '/entrenamientos') return mostrarPanelEntrenamientos(contenedorPrincipal);
-        
-        if (endpoint === '/planes-ent') {
-            contenedorPrincipal.innerHTML = '<div class="alert alert-info">Gestión de planes en construcción</div>';
-            return;
-        }
+        if (endpoint === '/planes-ent') { return mostrarPanelPlanes(contenedorPrincipal);}
 
         contenedorPrincipal.innerHTML = `<div class="alert alert-info">Bienvenido a la sección ${nombre}</div>`;
     }
@@ -195,3 +192,9 @@ import { mostrarPanelEntrenamientos,cargarEntrenamientos,verEntrenamiento,mostra
     window.mostrarFormEntrenamiento = () => mostrarFormEntrenamiento(contenedorPrincipal);
 
     window.guardarEntrenamiento = () => guardarEntrenamiento(csrfToken, window.cargarEntrenamientos);
+
+    window.cargarPlanes = () => cargarPlanes(contenedorPrincipal);
+    window.mostrarFormPlan = () => mostrarFormPlan(contenedorPrincipal);
+    window.guardarPlan = () => guardarPlan(csrfToken, window.cargarPlanes);
+    window.verPlan = (id) => verPlan(id, contenedorPrincipal);
+    window.eliminarPlan = (id) => eliminarPlan(id, csrfToken, window.cargarPlanes);

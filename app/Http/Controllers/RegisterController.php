@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ciclista;
+use App\Models\Bicicleta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,9 @@ class RegisterController extends Controller
 {
     public function register(Request $request)
     {
+        // ==============================
         // VALIDACIÓN
+        // ==============================
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|max:80',
             'apellidos' => 'required|string|max:80',
@@ -27,7 +30,9 @@ class RegisterController extends Controller
                 ->withInput();
         }
 
+        // ==============================
         // CREAR CICLISTA
+        // ==============================
         $ciclista = Ciclista::create([
             'nombre' => $request->nombre,
             'apellidos' => $request->apellidos,
@@ -38,10 +43,14 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
-        // LOGIN AUTOMÁTICO
+    
+
         Auth::login($ciclista);
 
-        // REDIRIGIR AL DASHBOARD
-        return redirect('/')->with('success', 'Cuenta creada correctamente');
+        // ==============================
+        // REDIRECCIÓN
+        // ==============================
+        return redirect('/')
+            ->with('success', 'Cuenta creada correctamente');
     }
 }
